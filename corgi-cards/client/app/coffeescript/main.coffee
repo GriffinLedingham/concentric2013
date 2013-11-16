@@ -81,6 +81,7 @@ class AppViewModel
     @board.clear()
     @player.hand.splice 0
     @player.deck.splice 0
+    @player.opponentHand.splice 0
     @player.discard.splice 0
 
   login: (player, ev) =>
