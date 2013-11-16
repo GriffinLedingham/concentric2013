@@ -6,8 +6,12 @@ var AppViewModel, Board, app, guid, s4,
 window.Player = (function() {
   function Player(delegate) {
     this.delegate = delegate;
+    this.join = __bind(this.join, this);
+    this.login = __bind(this.login, this);
     this.playCard = __bind(this.playCard, this);
     this.socket = this.delegate.socket;
+    this.username = ko.observable(null);
+    this.room = ko.observable(null);
     this.hand = ko.observableArray([]);
     this.deck = ko.observableArray([]);
     this.discard = ko.observableArray([]);
@@ -20,6 +24,20 @@ window.Player = (function() {
       x: Math.random() * 900,
       y: Math.random() * 600
     });
+  };
+
+  Player.prototype.login = function(player, ev) {
+    if (ev.keyCode === 13) {
+      this.socket.emit('auth', this.username());
+    }
+    return true;
+  };
+
+  Player.prototype.join = function(player, ev) {
+    if (ev.keyCode === 13) {
+      this.socket.emit('join_room', this.room());
+    }
+    return true;
   };
 
   return Player;
@@ -116,7 +134,7 @@ AppViewModel = (function() {
   function AppViewModel() {
     this.socket = io.connect(window.location.origin);
     this.socket.on('connect', function() {
-      this.socket.emit('auth', guid());
+      this.socket.emit('auth');
       return this.socket.emit('join_room', '1');
     });
     this.host = window.location.origin;

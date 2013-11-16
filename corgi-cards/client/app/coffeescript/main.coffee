@@ -42,8 +42,7 @@ class AppViewModel
     @socket = io.connect(window.location.origin)
 
     @socket.on 'connect', ->
-      @socket.emit 'auth', guid()
-      @socket.emit 'join_room','1'
+      @socket.
 
     @host = window.location.origin
 

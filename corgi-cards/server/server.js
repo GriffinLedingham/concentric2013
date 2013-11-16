@@ -23,15 +23,13 @@ var room_players = [];
 io.sockets.on('connection', function (socket) {
 	console.log('connected');
 	socket.room;
-	socket.guid;
   socket.uname;
   socket.deck;
   socket.discard;
 
   socket.hand = [];
 
-	socket.on('auth',function(guid_in,uname){
-		socket.guid = guid_in;
+	socket.on('auth',function(uname){
     socket.uname = uname;
 	});
 
@@ -51,7 +49,8 @@ io.sockets.on('connection', function (socket) {
     room_players[room].push(socket);
 		socket.room = room;
 		socket.join(room);
-		socket.broadcast.emit('message',{guid:socket.guid,data:socket.uname+' joined the room'});
+
+		socket.broadcast.emit('message',{data:socket.uname+' joined the room'});
 
     if(room_players[room].length === 2)
     {
@@ -74,6 +73,7 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('CardPlayed',function(data){
     console.log("Card Played\n", data)
+
     if(typeof active_cards[socket.room] === 'undefined')
     {
       active_cards[socket.room] = [];

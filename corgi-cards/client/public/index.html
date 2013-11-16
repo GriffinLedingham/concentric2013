@@ -18,8 +18,17 @@
     <div class="play" data-bind="click: playCard"></div>
   <!-- /ko -->
 
+  <!-- ko with: player -->
+  <input type="text" data-bind="
+    value: username,
+    valueUpdate: 'afterkeydown',
+    event: { keypress: login }">
 
-
+  <input type="text" data-bind="
+    value: room,
+    valueUpdate: 'afterkeydown',
+    event: { keypress: join }">
+    <!-- /ko -->
 
 
 
