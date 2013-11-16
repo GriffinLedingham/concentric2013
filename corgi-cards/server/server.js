@@ -10,7 +10,7 @@ var server = http.createServer(app);
 
 //app.listen(8142);
 
-var io = require('socket.io').listen(server);	
+var io = require('socket.io').listen(server);
 
 server.listen(8142);
 
@@ -37,7 +37,7 @@ io.sockets.on('connection', function (socket) {
     var x = data.x;
     var y = data.y;
     var card = data.card;
-
+    console.log("card moved", data);
     socket.broadcast.emit('CardMoved',data);
   });
 
@@ -45,7 +45,7 @@ io.sockets.on('connection', function (socket) {
     var card = data.card;
     var x = data.x;
     var y = data.y;
-
+    console.log(data);
     socket.broadcast.emit('CardPlayed',data);
   });
 });

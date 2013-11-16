@@ -9,7 +9,7 @@ guid = =>
 
 
 
-window.socket = io.connect('http://localhost:8142')
+window.socket = io.connect(window.location.origin)
 
 socket.on 'connect', ->
   socket.emit 'auth', guid()
@@ -29,38 +29,37 @@ Cards = [c1, c2]
 class AppViewModel
   constructor: () ->
 
+    @host = window.location.origin
+
     @cards = ko.observableArray()
     y = 0
     _.each Cards, (card) =>
       @cards.push new CardViewModel @, {card: card, position: {x:0, y: y}}
 
-      socket.emit 'CardPlayed', =>
-        {x: position[0], y: position[1], card: @card.card}
+      socket.emit 'CardPlayed', {x:0, y: y, card: card}
 
       y += 120
 
 
     socket.on 'CardMoved', (data) =>
+
       card = _.find @cards(), (card) =>
-        card.id is data.card.id
+        card.card.id is data.card.id
 
       return unless card
 
-      $cardvm = $("#{card.id}")
-      $cardvm.css "top", data.y
-      $cardvm.css "left", data.x
+      $cardvm = $("##{card.card.id}")
+
+
+      console.log data
+
+      $cardvm.css "top", data.y + 'px'
+      $cardvm.css "left", data.x + 'px'
 
 
     socket.on 'CardPlayed', (data) =>
-      data.card
-
-      @cards.push new CardViewModel @, {card: card, x: data.x, y: data.y}
-
-      return unless card
-
-      $cardvm = $("#{card.id}")
-      $cardvm.css "top", data.y
-      $cardvm.css "left", data.x
+      console.log data
+      @cards.push new CardViewModel @, {card: data.card, position: {x: data.x, y: data.y} }
 
 
 app = new AppViewModel
