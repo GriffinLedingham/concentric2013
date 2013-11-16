@@ -12,4 +12,5 @@ class window.Player
 
 
   playCard: (card, ui) =>
+
     @socket.emit 'CardPlayed', {id: guid(), name: "fuck ya", x: Math.random()*900, y: Math.random()*600}

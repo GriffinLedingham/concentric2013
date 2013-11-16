@@ -10,7 +10,7 @@
 
   <article id="board" data-bind="with: board">
     <!-- ko foreach: cards -->
-        <div class="card" data-bind="text:name, draggable: {dragstop: $parent.dragstop}, attr: {id: id}"></div>
+        <div class="card" data-bind="text:name, draggable: {dragstop: dragstop}, attr: {id: id}"></div>
     <!-- /ko -->
   </article>
 

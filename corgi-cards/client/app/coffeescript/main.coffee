@@ -23,7 +23,7 @@ class Board
 
       return unless card
 
-      $cardvm = $("##{card.card.id}")
+      $cardvm = $("##{card.id}")
       $cardvm.css "top", data.y + 'px'
       $cardvm.css "left", data.x + 'px'
 
@@ -31,6 +31,9 @@ class Board
     @socket.on 'CardPlayed', (data) =>
       @cards.push new Card(@, {id: data.id, name: data.name, position: {x: data.x, y: data.y} })
 
+      $cardvm = $("##{data.id}")
+      $cardvm.css "top", data.y + 'px'
+      $cardvm.css "left", data.x + 'px'
 
 
 class AppViewModel

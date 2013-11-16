@@ -52,7 +52,7 @@ io.sockets.on('connection', function (socket) {
 		socket.room = room;
 		socket.join(room);
 		socket.broadcast.emit('message',{guid:socket.guid,data:socket.uname+' joined the room'});
-    
+
     if(room_players[room].length === 2)
     {
       //start_game(room_players[room][0], room_players[room][1]);
@@ -60,6 +60,7 @@ io.sockets.on('connection', function (socket) {
 	});
 
   socket.on('CardMoved',function(data){
+    console.log("Card Moved\n", data)
     var x = data.x;
     var y = data.y;
     var id = data.id;
@@ -72,7 +73,7 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('CardPlayed',function(data){
-    console.log("here");
+    console.log("Card Played\n", data)
     if(typeof active_cards[socket.room] === 'undefined')
     {
       active_cards[socket.room] = [];
