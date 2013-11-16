@@ -10,7 +10,7 @@
 
   <article id="board" data-bind="with: board, droppable: {accept: '.hand', drop: board.dropCard}">
     <!-- ko foreach: cards -->
-        <div class="card" data-bind="text:name, draggable: {dragstop: $parent.dragstop}, attr: {id: id}"></div>
+        <div class="card" data-bind="text:name, draggable: {dragstop: $parent.dragstop, enabled: isMine}, attr: {id: id}"></div>
     <!-- /ko -->
   </article>
 
@@ -18,12 +18,11 @@
     <div class="play" data-bind="click: playCard"></div>
 
     <!-- ko foreach: hand -->
-        <div class="card hand" data-bind="text:name, draggable: {dragstop: $parent.dragstop}, attr: {id: id}"></div>
+        <div class="card hand" data-bind="text:name, draggable: {dragstop: $parent.dragstop, enabled: isMine}, attr: {id: id}"></div>
     <!-- /ko -->
 
   <!-- /ko -->
 
-  <!-- ko with: player -->
   <article class="login">
     <input type="text" placeholder="username" data-bind="
       value: username,
@@ -36,7 +35,6 @@
       valueUpdate: 'afterkeydown',
       event: { keypress: join }">
   </article>
-  <!-- /ko -->
 
 
 

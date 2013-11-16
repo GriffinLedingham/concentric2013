@@ -4,8 +4,9 @@ ko.bindingHandlers.draggable =
       options = ko.utils.unwrapObservable(valueAccessor())
       element = $(element)
 
-      $(element).draggable()
-      $(element).on 'drag', options.dragstop
+      if options.enabled()
+        $(element).draggable()
+        $(element).on 'drag', options.dragstop
 
 ko.bindingHandlers.droppable =
     init: (element, valueAccessor) ->
