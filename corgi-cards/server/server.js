@@ -33,7 +33,19 @@ io.sockets.on('connection', function (socket) {
 		socket.broadcast.emit('message',{guid:socket.guid,data:socket.uname+' joined the room'});
 	});
 
-  socket.on('message',function(data){
+  socket.on('CardMoved',function(data){
+    var x = data.x;
+    var y = data.y;
+    var card = data.card;
 
+    socket.broadcast.emit('CardMoved',data);
+  });
+
+  socket.on('CardPlayed',function(data){
+    var card = data.card;
+    var x = data.x;
+    var y = data.y;
+
+    socket.broadcast.emit('CardPlayed',data);
   });
 });
