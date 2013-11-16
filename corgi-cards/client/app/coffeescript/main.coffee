@@ -35,14 +35,14 @@ class Board
       $cardvm.css "top", data.y + 'px'
       $cardvm.css "left", data.x + 'px'
 
+  clear: () =>
+    @cards.splice(0)
+
 
 class AppViewModel
   constructor: () ->
 
     @socket = io.connect(window.location.origin)
-
-    @socket.on 'connect', ->
-      @socket.
 
     @host = window.location.origin
 

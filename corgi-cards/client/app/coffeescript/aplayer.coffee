@@ -1,6 +1,7 @@
 class window.Player
   constructor: (@delegate) ->
     {
+      @board
       @socket
     } = @delegate
 
@@ -25,6 +26,10 @@ class window.Player
 
   join: (player, ev) =>
     if ev.keyCode is 13
+      @board.clear()
       @socket.emit 'join_room', @room()
 
     true
+
+  woo: () =>
+    console.log "ashir"
