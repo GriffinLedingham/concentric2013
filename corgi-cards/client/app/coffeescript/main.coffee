@@ -51,14 +51,12 @@ class AppViewModel
       $cardvm = $("##{card.card.id}")
 
 
-      console.log data
 
       $cardvm.css "top", data.y + 'px'
       $cardvm.css "left", data.x + 'px'
 
 
     socket.on 'CardPlayed', (data) =>
-      console.log data
       @cards.push new CardViewModel @, {card: data.card, position: {x: data.x, y: data.y} }
 
 

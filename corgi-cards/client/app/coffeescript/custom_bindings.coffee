@@ -5,4 +5,4 @@ ko.bindingHandlers.draggable =
       element = $(element)
 
       $(element).draggable()
-      $(element).on 'dragstop', options.dragstop
+      $(element).on 'drag', options.dragstop
