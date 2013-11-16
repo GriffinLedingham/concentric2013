@@ -72,6 +72,10 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('CardPlayed',function(data){
+    if(typeof socket.room === 'undefined')
+    {
+      return;
+    }
     console.log("Card Played\n", data)
 
     if(typeof active_cards[socket.room] === 'undefined')
