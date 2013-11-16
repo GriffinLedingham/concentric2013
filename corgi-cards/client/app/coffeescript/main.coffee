@@ -36,7 +36,6 @@ class Board
       $cardvm.css "left", data.x + 'px'
 
     @socket.on "sync_active", (data) =>
-      console.log data
       _.each data, (card) =>
 
         @cards.push new Card(@, {id: card.id, name: card.name, position: {x: card.x, y: card.y} })
@@ -52,9 +51,16 @@ class Board
 
     card = ko.dataFor ui.helper.get(0)
 
-    console.log card.position()
+    @socket.emit 'CardPlayed', {id: card.id, name: card.name,  x: card.position()[0], y: card.position()[1]}
 
-    @socket.emit 'CardPlayed', {}
+  dragstop: (ev, ui) =>
+
+    card = ko.dataFor ui.helper.get(0)
+
+    card.position()[0] = ui.position.left
+    card.position()[1] = ui.position.top
+
+    @socket.emit 'CardMoved', {id: card.id, name: card.name, x: ui.position.left, y: ui.position.top}
 
 
 class AppViewModel
@@ -68,6 +74,11 @@ class AppViewModel
 
     @player = new Player @
 
+  restart: () =>
+    @board.clear()
+    @player.hand.splice 0
+    @player.deck.splice 0
+    @player.discard.splice 0
 
 app = new AppViewModel
 

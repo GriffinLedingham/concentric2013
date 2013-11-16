@@ -47,6 +47,8 @@ io.sockets.on('connection', function (socket) {
       room_players[room] = [];
     }
 
+    // TODO: If there are already two people in the room, enter spectator mode.
+
     room_players[room].push(socket);
 		socket.room = room;
 		socket.join(room);
@@ -107,6 +109,7 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('CardToHand',function(data){
+    console.log("ASDASDASDASDASD");
     socket.hand.push(data);
 
     socket.emit('CardToHand',data);

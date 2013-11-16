@@ -1,3 +1,16 @@
+$boardWidth: 900px
+$boardHeight: 600px
+
+$padding: 10px
+
+ul
+  padding: 0
+  margin: 0
+  li
+    list-style: none
+    padding: 0
+    margin: 0
+
 body
   padding: 0
   margin: 0
@@ -10,9 +23,9 @@ body
   background-color: red
 
 #board
-  position: absol
-  width: 900px
-  height: 600px
+  position: absolute
+  width: $boardWidth
+  height: $boardHeight
 
   background-color: green
 
@@ -20,10 +33,20 @@ body
 
 
 .play
-  width: 200px
-  height: 200px
+  width: 100px
+  height: 100px
   background-color: blue
   position: absolute
-  left: 1000px
+  bottom: 0
+  right: 0
 
-  top: 200px
+.login
+  position: absolute
+  top: 50px
+  left: $padding
+
+#hand
+  position: absolute
+
+  top: $boardHeight + 100px
+  width: 100%
