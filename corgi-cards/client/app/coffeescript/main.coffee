@@ -35,6 +35,15 @@ class Board
       $cardvm.css "top", data.y + 'px'
       $cardvm.css "left", data.x + 'px'
 
+    @socket.on "sync_active", (data) =>
+      _.each data, (card) =>
+
+        @cards.push new Card(@, {id: card.id, name: card.name, position: {x: card.x, y: card.y} })
+
+        $cardvm = $("##{card.id}")
+        $cardvm.css "top", card.y + 'px'
+        $cardvm.css "left", card.x + 'px'
+
   clear: () =>
     @cards.splice(0)
 
