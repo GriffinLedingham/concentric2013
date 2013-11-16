@@ -1,3 +1,21 @@
 class window.Card
   constructor: (data) ->
-    console.log "here"
+
+    @id = data.id
+    @name = data.name
+
+    @img = data.img
+
+
+
+
+
+
+
+
+class window.monsters
+  constructor: (data) ->
+
+
+class window.spell
+  constructor: (data) ->
