@@ -1,6 +1,7 @@
 
 init = ->
-  console.log "here"
+  c = new Card()
+
 
 
 $ ->
