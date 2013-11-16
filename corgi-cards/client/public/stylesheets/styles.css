@@ -12,9 +12,15 @@ body {
 
 .card {
   position: absolute;
-  width: 200px;
-  height: 200px;
-  background-color: red; }
+  width: 180px;
+  height: 260px;
+  background-color: white;
+  border: 15px solid black;
+  border-radius: 15px; }
+  .card.monster {
+    background-color: red; }
+  .card.spell {
+    background-color: blue; }
 
 #board {
   position: absolute;

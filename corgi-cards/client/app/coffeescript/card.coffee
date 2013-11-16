@@ -7,6 +7,8 @@ class window.Card
     @id = data.id
     @name = data.name
 
+    @type = data.type
+
     @uname = data.uname
 
     @img = data.img
@@ -15,4 +17,5 @@ class window.Card
 
 
   isMine: (card, ui) =>
+    console.log app.username(), @uname
     app.username() is @uname

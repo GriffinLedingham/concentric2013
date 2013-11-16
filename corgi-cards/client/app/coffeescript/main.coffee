@@ -38,7 +38,7 @@ class Board
     @socket.on "sync_active", (data) =>
       _.each data, (card) =>
 
-        @cards.push new Card(@, {id: card.id, name: card.name, position: {x: card.x, y: card.y} })
+        @cards.push new Card(@, {id: card.id, name: card.name, uname: card.uname, position: {x: card.x, y: card.y} })
 
         $cardvm = $("##{card.id}")
         $cardvm.css "top", card.y + 'px'

@@ -20,6 +20,28 @@ var active_cards = [];
 
 var room_players = [];
 
+var rdw = [];
+var control = [];
+
+for(var i =0;i<20;i++)
+{
+  rdw.push({
+              name: 'RDW'+i,
+              id: guid(),
+              type:'monster'
+          });
+}
+
+for(var i=0;i<20;i++)
+{
+  control.push({
+              name: 'Control'+i,
+              id:guid(),
+              type:'spell'
+          });
+}
+
+
 io.sockets.on('connection', function (socket) {
 	console.log('connected');
 	socket.room;
@@ -33,10 +55,6 @@ io.sockets.on('connection', function (socket) {
     socket.uname = uname;
 	});
 
-  socket.on('load_deck',function(deck){
-    socket.deck = shuffleArray(deck);
-  });
-
 	socket.on('join_room', function(room){
     console.log(room);
     if(typeof room_players[room] === 'undefined')
@@ -44,29 +62,24 @@ io.sockets.on('connection', function (socket) {
       room_players[room] = [];
     }
 
+
+
     // TODO: If there are already two people in the room, enter spectator mode.
 
     room_players[room].push(socket);
 		socket.room = room;
 		socket.join(room);
     if(active_cards[room] !== undefined){
-
-
       socket.emit('sync_active',active_cards[room]);
     }
     if(room_players[room].length === 2)
     {
-      //start_game(room_players[room][0], room_players[room][1]);
+      start_game(room_players[room][0], room_players[room][1]);
     }
 	});
 
   socket.on('CardMoved',function(data){
     //console.log("Card Moved\n", data)
-
-    if(data.uname !== socket.uname)
-    {
-      return;
-    }
 
     var card_index;
 
@@ -127,23 +140,34 @@ io.sockets.on('connection', function (socket) {
  */
 function start_game(player1, player2)
 {
+  player1.deck = shuffleArray(rdw);
+  for(var i =0;i<player1.deck.length;i++)
+  {
+    player1.deck[i].uname = player1.uname;
+  }
+  player2.deck = shuffleArray(control);
+  for(var i =0;i<player2.deck.length;i++)
+  {
+    player2.deck[i].uname = player2.uname;
+  }
+
   player1.hand = [];
   player2.hand = [];
 
   for(var i = 0;i<5;i++)
   {
-    player1.hand.push(player1.deck[i]);
-    player2.hand.push(player2.deck[i]);
-
-    player1.deck.splice(i,1);
-    player2.deck.splice(i,1);
+    draw_card(player1);
+    draw_card(player2);
   }
 }
 
 function draw_card(player)
 {
-    player.hand.push(player.deck[0]);
+    var top_deck = player.deck[0];
+    player.hand.push(top_deck);
     player.deck.splice(0,1);
+
+    player.emit('CardDraw',top_deck);
 }
 
 function shuffleArray(array) {
@@ -155,3 +179,15 @@ function shuffleArray(array) {
     }
     return array;
 }
+
+function s4(){
+  return Math.floor((1 + Math.random()) * 0x10000)
+             .toString(16)
+             .substring(1);
+}
+
+function guid(){ 
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+           s4() + '-' + s4() + s4() + s4();
+}
+

@@ -13,8 +13,10 @@ class window.Player
 
     @discard = ko.observableArray []
 
-    @socket.on "CardToHand", (data) =>
-      @hand.push new Card @, data
+    @socket.on "CardDraw", (data) =>
+      data.position = {x: Math.random()*200 + 900, y: Math.random()*600}
+      card = new Card @, data
+      @hand.push card
 
     @socket.on "CardPlayed", (data) =>
       if (card = (_.find @hand(), (card) => card.id is data.id))
