@@ -4,7 +4,7 @@ var express = require('express');
 
 var app = express()
 
-app.use(express.static("../client/public"));
+app.use(express.static("client/public"));
 
 var server = http.createServer(app);
 
@@ -20,14 +20,20 @@ io.sockets.on('connection', function (socket) {
 	console.log('connected');
 	socket.room;
 	socket.guid;
+  socket.uname;
 
-	socket.on('auth',function(guid_in){
+	socket.on('auth',function(guid_in,uname){
 		socket.guid = guid_in;
+    socket.uname = uname;
 	});
 
 	socket.on('join_room', function(room){
 		socket.room = room;
 		socket.join(room);
-		socket.broadcast.emit('message',{guid:socket.guid,data:socket.guid+' joined the room'});
+		socket.broadcast.emit('message',{guid:socket.guid,data:socket.uname+' joined the room'});
 	});
+
+  socket.on('message',function(data){
+
+  });
 });
