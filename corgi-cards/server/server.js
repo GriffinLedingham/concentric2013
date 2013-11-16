@@ -50,7 +50,7 @@ io.sockets.on('connection', function (socket) {
 		socket.room = room;
 		socket.join(room);
 
-		socket.broadcast.emit('message',{data:socket.uname+' joined the room'});
+    socket.emit('sync_active',active_cards[room]);
 
     if(room_players[room].length === 2)
     {
@@ -72,6 +72,10 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('CardPlayed',function(data){
+    if(typeof socket.room === 'undefined')
+    {
+      return;
+    }
     console.log("Card Played\n", data)
 
     if(typeof active_cards[socket.room] === 'undefined')
