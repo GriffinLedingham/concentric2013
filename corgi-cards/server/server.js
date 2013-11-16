@@ -55,7 +55,7 @@ io.sockets.on('connection', function (socket) {
     
     if(room_players[room].length === 2)
     {
-      start_game(room_players[room][0], room_players[room][1]);
+      //start_game(room_players[room][0], room_players[room][1]);
     }
 	});
 
@@ -64,26 +64,27 @@ io.sockets.on('connection', function (socket) {
     var y = data.y;
     var id = data.id;
 
-    active_cards[room][data.id].x = x;
-    active_cards[room][data.id].y = y;
+    active_cards[socket.room][data.id].x = x;
+    active_cards[socket.room][data.id].y = y;
 
     //Emitting an object with a card object, an x and a y
-    socket.broadcast.emit('CardMoved',active_cards[room][data.id]);
+    socket.broadcast.emit('CardMoved',active_cards[socket.room][data.id]);
   });
 
   socket.on('CardPlayed',function(data){
-    if(typeof active_cards[room] === 'undefined')
+    console.log("here");
+    if(typeof active_cards[socket.room] === 'undefined')
     {
-      active_cards[room] = [];
+      active_cards[socket.room] = [];
     }
 
     var id = data.id;
     var x = data.x;
     var y = data.y;
 
-    active_card[room][data.id] = data;
+    active_cards[socket.room][data.id] = data;
 
-    socket.broadcast.emit('CardPlayed',active_card[room][data.id]);
+    io.sockets.in(socket.room).emit('CardPlayed',active_cards[socket.room][data.id]);
   });
 });
 
