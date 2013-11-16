@@ -10,7 +10,6 @@ window.Player = (function() {
     this.delegate = delegate;
     this.isMine = __bind(this.isMine, this);
     this.dragstop = __bind(this.dragstop, this);
-    this.playCard = __bind(this.playCard, this);
     _ref = this.delegate, this.board = _ref.board, this.socket = _ref.socket;
     this.hand = ko.observableArray([]);
     this.deck = ko.observableArray([]);
@@ -18,19 +17,17 @@ window.Player = (function() {
     this.opponentHand = ko.observableArray([]);
     this.socket.on("CardDraw", function(data) {
       var $cardvm, card;
-      data.position = {
-        x: Math.random() * 200 + 900,
-        y: Math.random() * 600
-      };
+      data.x = Math.random() * 200 + 900;
+      data.y = Math.random() * 600;
       card = new Card(_this, data);
       _this.hand.push(card);
       $cardvm = $("#" + card.id);
-      $cardvm.css("top", data.position.y + 'px');
-      $cardvm.css("left", data.position.x + 'px');
+      $cardvm.css("top", data.y + 'px');
+      $cardvm.css("left", data.x + 'px');
       return _this.socket.emit("HandMoved", {
         id: card.id,
-        x: data.position.x,
-        y: data.position.y
+        x: data.x,
+        y: data.y
       });
     });
     this.socket.on("CardPlayed", function(data) {
@@ -47,17 +44,20 @@ window.Player = (function() {
       }
     });
     this.socket.on("SyncHand", function(data) {
+      console.log(data);
       return _.each(data, function(card) {
-        return _this.hand.push(new Card(_this, card));
+        var $cardvm;
+        _this.hand.push(new Card(_this, card));
+        $cardvm = $("#" + card.id);
+        $cardvm.css("top", card.y + 'px');
+        return $cardvm.css("left", card.x + 'px');
       });
     });
     this.socket.on("OpponentDraw", function(data) {
       return _this.opponentHand.push({
         id: data,
-        position: {
-          x: -100,
-          y: -100
-        }
+        x: -100,
+        y: -100
       });
     });
     this.socket.on("HandMoved", function(data) {
@@ -66,36 +66,24 @@ window.Player = (function() {
         return card.id === data.id;
       });
       if (card != null) {
-        card.position.x = data.x;
+        card.x = data.x;
       }
       if (card != null) {
-        card.position.y = data.y;
+        card.y = data.y;
       }
-      $cardvm = $("#" + card.id);
+      $cardvm = $("#" + data.id);
       $cardvm.css("top", data.y + 'px');
       return $cardvm.css("left", data.x + 'px');
     });
   }
-
-  Player.prototype.playCard = function(card, ui) {
-    return this.socket.emit('CardToHand', {
-      id: guid(),
-      name: "fuck ya",
-      uname: app.username(),
-      position: {
-        x: Math.random() * 200 + 900,
-        y: Math.random() * 600
-      }
-    });
-  };
 
   Player.prototype.dragstop = function(card, ui) {
     card = ko.dataFor(ui.helper.get(0));
     if (!card) {
       return;
     }
-    card.position()[0] = ui.position.left;
-    card.position()[1] = ui.position.top;
+    card.x(ui.position.left);
+    card.y(ui.position.top);
     return this.socket.emit("HandMoved", {
       id: card.id,
       x: ui.position.left,
@@ -121,7 +109,8 @@ window.Card = (function() {
     this.type = ko.observable(data.type);
     this.uname = data.uname;
     this.img = data.img;
-    this.position = ko.observable([data.position.x, data.position.y]);
+    this.x = ko.observable(data.x);
+    this.y = ko.observable(data.y);
   }
 
   Card.prototype.isMine = function(card, ui) {
@@ -189,10 +178,8 @@ Board = (function() {
         name: data.name,
         uname: data.uname,
         type: data.type,
-        position: {
-          x: data.x,
-          y: data.y
-        }
+        x: data.x,
+        y: data.y
       }));
       $cardvm = $("#" + data.id);
       $cardvm.css("top", data.y + 'px');
@@ -206,10 +193,8 @@ Board = (function() {
           name: card.name,
           uname: card.uname,
           type: card.type,
-          position: {
-            x: card.x,
-            y: card.y
-          }
+          x: card.x,
+          y: card.y
         }));
         $cardvm = $("#" + card.id);
         $cardvm.css("top", card.y + 'px');
@@ -230,16 +215,16 @@ Board = (function() {
       name: card.name,
       uname: card.uname,
       type: card.type(),
-      x: card.position()[0],
-      y: card.position()[1]
+      x: card.x(),
+      y: card.y()
     });
   };
 
   Board.prototype.dragstop = function(ev, ui) {
     var card;
     card = ko.dataFor(ui.helper.get(0));
-    card.position()[0] = ui.position.left;
-    card.position()[1] = ui.position.top;
+    card.x(ui.position.left);
+    card.y(ui.position.top);
     return this.socket.emit('CardMoved', {
       id: card.id,
       name: card.name,

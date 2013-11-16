@@ -78,6 +78,7 @@ io.sockets.on('connection', function (socket) {
           if(room_players[room][0].uname === socket.uname)
           {
             socket.emit('SyncHand',room_players[room][0].hand);
+            socket.emit('SyncOpponentHand', room_players[room][1].hand);
           }
         }
 
@@ -86,6 +87,7 @@ io.sockets.on('connection', function (socket) {
           if(room_players[room][1].uname === socket.uname)
           {
             socket.emit('SyncHand',room_players[room][1].hand);
+            socket.emit('SyncOpponentHand', room_players[room][0].hand);
           }
         }
       }
