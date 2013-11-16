@@ -1,8 +1,19 @@
 var fs = require('fs')
-var app = require('http').createServer(handler);
-app.listen(8142);
+var http = require('http');
+var express = require('express');
 
-var io = require('socket.io').listen(app);		  
+var app = express()
+
+app.use(express.static("../client/public"));
+
+var server = http.createServer(app);
+
+//app.listen(8142);
+
+var io = require('socket.io').listen(server);	
+
+server.listen(8142);
+
 io.set('log level', 0);
 
 io.sockets.on('connection', function (socket) {
@@ -20,16 +31,3 @@ io.sockets.on('connection', function (socket) {
 		socket.broadcast.emit('message',{guid:socket.guid,data:socket.guid+' joined the room'});
 	});
 });
-
-function handler (req, res) {
-  fs.readFile(__dirname + '/index.html',
-  function (err, data) {
-    if (err) {
-      res.writeHead(500);
-      return res.end('Error loading index.html');
-    }
- 
-    res.writeHead(200);
-    res.end(data);
-  });
-}
