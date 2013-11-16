@@ -5,8 +5,7 @@ class window.Player
       @socket
     } = @delegate
 
-    @username = ko.observable null
-    @room = ko.observable null
+
 
     @hand = ko.observableArray []
 
@@ -23,20 +22,7 @@ class window.Player
 
 
   playCard: (card, ui) =>
-    @socket.emit 'CardToHand', {id: guid(), name: "fuck ya", position: {x: Math.random()*200 + 900, y: Math.random()*600} }
-
-  login: (player, ev) =>
-    if ev.keyCode is 13
-      @socket.emit 'auth', @username()
-
-    true
-
-  join: (player, ev) =>
-    if ev.keyCode is 13
-      app.restart()
-      @socket.emit 'join_room', @room()
-
-    true
+    @socket.emit 'CardToHand', {id: guid(), name: "fuck ya", uname: app.username(), position: {x: Math.random()*200 + 900, y: Math.random()*600} }
 
   dragstop: (card, ui) =>
 
@@ -47,3 +33,6 @@ class window.Player
     card.position()[0] = ui.position.left
     card.position()[1] = ui.position.top
 
+
+  isMine: () =>
+    true

@@ -29,7 +29,7 @@ class Board
 
 
     @socket.on 'CardPlayed', (data) =>
-      @cards.push new Card(@, {id: data.id, name: data.name, position: {x: data.x, y: data.y} })
+      @cards.push new Card @, {id: data.id, name: data.name, uname: data.uname, position: {x: data.x, y: data.y} }
 
       $cardvm = $("##{data.id}")
       $cardvm.css "top", data.y + 'px'
@@ -51,7 +51,7 @@ class Board
 
     card = ko.dataFor ui.helper.get(0)
 
-    @socket.emit 'CardPlayed', {id: card.id, name: card.name,  x: card.position()[0], y: card.position()[1]}
+    @socket.emit 'CardPlayed', {id: card.id, name: card.name, uname: card.uname, x: card.position()[0], y: card.position()[1]}
 
   dragstop: (ev, ui) =>
 
@@ -66,6 +66,9 @@ class Board
 class AppViewModel
   constructor: () ->
 
+    @username = ko.observable null
+    @room = ko.observable null
+
     @socket = io.connect(window.location.origin)
 
     @host = window.location.origin
@@ -79,6 +82,20 @@ class AppViewModel
     @player.hand.splice 0
     @player.deck.splice 0
     @player.discard.splice 0
+
+  login: (player, ev) =>
+    if ev.keyCode is 13
+      @socket.emit 'auth', app.username()
+
+    true
+
+  join: (player, ev) =>
+    if ev.keyCode is 13
+      app.restart()
+      @socket.emit 'join_room', @room()
+
+    true
+
 
 app = new AppViewModel
 

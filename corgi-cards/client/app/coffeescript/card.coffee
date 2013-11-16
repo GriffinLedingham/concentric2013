@@ -7,13 +7,12 @@ class window.Card
     @id = data.id
     @name = data.name
 
+    @uname = data.uname
+
     @img = data.img
 
     @position = ko.observable [data.position.x, data.position.y]
 
 
-  dragstop: (ev, ui) =>
-    @position()[0] = ui.position.left
-    @position()[1] = ui.position.top
-
-    @socket.emit 'CardMoved', {id: @id, name: @name, x: ui.position.left, y: ui.position.top}
+  isMine: (card, ui) =>
+    app.username() is @uname
