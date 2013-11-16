@@ -36,6 +36,7 @@ class Board
       $cardvm.css "left", data.x + 'px'
 
     @socket.on "sync_active", (data) =>
+      console.log data
       _.each data, (card) =>
 
         @cards.push new Card(@, {id: card.id, name: card.name, position: {x: card.x, y: card.y} })
