@@ -71,6 +71,26 @@ io.sockets.on('connection', function (socket) {
 		socket.join(room);
     if(active_cards[room] !== undefined){
       socket.emit('sync_active',active_cards[room]);
+
+      if(room_players[room] !== 'undefined')
+      {
+        if(room_players[room][0] !== 'undefined')
+        {
+          if(room_players[room][0].uname === socket.uname)
+          {
+            socket.emit('SyncHand',room_players[room][0].hand);
+          }
+        }
+
+        if(room_players[room][1] !== 'undefined')
+        {
+          if(room_players[room][1].uname === socket.uname)
+          {
+            socket.emit('SyncHand',room_players[room][1].hand);
+          }
+        }
+      }
+
     }
     if(room_players[room].length === 2)
     {
@@ -103,6 +123,20 @@ io.sockets.on('connection', function (socket) {
     socket.broadcast.emit('CardMoved',active_cards[socket.room][card_index]);
   });
 
+  socket.on('HandMoved',function(data){
+    for(var i = 0;i<socket.hand.length;i++)
+    {
+      if(socket.hand[i].id === data.id)
+      {
+        socket.hand[i].x = data.x;
+        socket.hand[i].y = data.y;
+        break;
+      }
+    }
+
+    socket.broadcast.emit('HandMoved',{x:data.x,y:data.y,id:data.id});    
+  });
+
   socket.on('CardPlayed',function(data){
     if(typeof socket.room === 'undefined' || typeof socket.uname === 'undefined')
     {
@@ -125,12 +159,6 @@ io.sockets.on('connection', function (socket) {
     socket.hand.push(data);
 
     socket.emit('CardToHand',data);
-  });
-
-  socket.on('HandMoved',function(data){
-    var x = data.x;
-    var y = data.y;
-
   });
 });
 
@@ -162,12 +190,14 @@ function start_game(player1, player2)
 }
 
 function draw_card(player)
-{
+{ 
     var top_deck = player.deck[0];
     player.hand.push(top_deck);
     player.deck.splice(0,1);
 
     player.emit('CardDraw',top_deck);
+
+    player.broadcast.emit('OpponentDraw',top_deck.id);
 }
 
 function shuffleArray(array) {

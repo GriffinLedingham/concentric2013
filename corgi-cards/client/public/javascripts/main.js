@@ -15,22 +15,65 @@ window.Player = (function() {
     this.hand = ko.observableArray([]);
     this.deck = ko.observableArray([]);
     this.discard = ko.observableArray([]);
+    this.opponentHand = ko.observableArray([]);
     this.socket.on("CardDraw", function(data) {
-      var card;
+      var $cardvm, card;
       data.position = {
         x: Math.random() * 200 + 900,
         y: Math.random() * 600
       };
       card = new Card(_this, data);
-      return _this.hand.push(card);
+      _this.hand.push(card);
+      $cardvm = $("#" + card.id);
+      $cardvm.css("top", data.position.y + 'px');
+      $cardvm.css("left", data.position.x + 'px');
+      return _this.socket.emit("HandMoved", {
+        id: card.id,
+        x: data.position.x,
+        y: data.position.y
+      });
     });
     this.socket.on("CardPlayed", function(data) {
       var card;
       if ((card = _.find(_this.hand(), function(card) {
         return card.id === data.id;
       }))) {
-        return _this.hand(_.without(_this.hand(), card));
+        _this.hand(_.without(_this.hand(), card));
       }
+      if ((card = _.find(_this.opponentHand(), function(card) {
+        return card.id === data.id;
+      }))) {
+        return _this.opponentHand(_.without(_this.opponentHand(), card));
+      }
+    });
+    this.socket.on("SyncHand", function(data) {
+      return _.each(data, function(card) {
+        return _this.hand.push(new Card(_this, card));
+      });
+    });
+    this.socket.on("OpponentDraw", function(data) {
+      return _this.opponentHand.push({
+        id: data,
+        position: {
+          x: -100,
+          y: -100
+        }
+      });
+    });
+    this.socket.on("HandMoved", function(data) {
+      var $cardvm, card;
+      card = _.find(_this.opponentHand(), function(card) {
+        return card.id === data.id;
+      });
+      if (card != null) {
+        card.position.x = data.x;
+      }
+      if (card != null) {
+        card.position.y = data.y;
+      }
+      $cardvm = $("#" + card.id);
+      $cardvm.css("top", data.y + 'px');
+      return $cardvm.css("left", data.x + 'px');
     });
   }
 
@@ -52,7 +95,12 @@ window.Player = (function() {
       return;
     }
     card.position()[0] = ui.position.left;
-    return card.position()[1] = ui.position.top;
+    card.position()[1] = ui.position.top;
+    return this.socket.emit("HandMoved", {
+      id: card.id,
+      x: ui.position.left,
+      y: ui.position.top
+    });
   };
 
   Player.prototype.isMine = function() {

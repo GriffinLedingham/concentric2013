@@ -21,6 +21,10 @@ body {
     background-color: red; }
   .card.spell {
     background-color: blue; }
+  .card.opponent {
+    background-color: black;
+    top: 500px;
+    left: 500px; }
 
 #board {
   position: absolute;

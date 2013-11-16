@@ -21,6 +21,10 @@
         <div class="card hand" data-bind="text:name, draggable: {dragstop: $parent.dragstop, enabled: isMine}, attr: {id: id}, class: type"></div>
     <!-- /ko -->
 
+    <!-- ko foreach: opponentHand -->
+      <div class="card opponent" data-bind="attr: {id: id}"></div>
+    <!-- /ko -->
+
   <!-- /ko -->
 
   <article class="login">
@@ -35,8 +39,6 @@
       valueUpdate: 'afterkeydown',
       event: { keypress: join }">
   </article>
-
-
 
 
   <script src="javascripts/socket.io.js"></script>
