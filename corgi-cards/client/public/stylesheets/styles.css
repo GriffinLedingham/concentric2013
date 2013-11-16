@@ -14,7 +14,7 @@ body {
   position: absolute;
   width: 180px;
   height: 260px;
-  background-color: white;
+  color: white;
   border: 15px solid black;
   border-radius: 15px; }
   .card.monster {

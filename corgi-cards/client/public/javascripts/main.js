@@ -118,14 +118,13 @@ window.Card = (function() {
     this.socket = this.delegate.socket;
     this.id = data.id;
     this.name = data.name;
-    this.type = data.type;
+    this.type = ko.observable(data.type);
     this.uname = data.uname;
     this.img = data.img;
     this.position = ko.observable([data.position.x, data.position.y]);
   }
 
   Card.prototype.isMine = function(card, ui) {
-    console.log(app.username(), this.uname);
     return app.username() === this.uname;
   };
 
@@ -189,6 +188,7 @@ Board = (function() {
         id: data.id,
         name: data.name,
         uname: data.uname,
+        type: data.type,
         position: {
           x: data.x,
           y: data.y
@@ -205,6 +205,7 @@ Board = (function() {
           id: card.id,
           name: card.name,
           uname: card.uname,
+          type: card.type,
           position: {
             x: card.x,
             y: card.y
@@ -228,6 +229,7 @@ Board = (function() {
       id: card.id,
       name: card.name,
       uname: card.uname,
+      type: card.type(),
       x: card.position()[0],
       y: card.position()[1]
     });
