@@ -105,6 +105,12 @@ io.sockets.on('connection', function (socket) {
 
     io.sockets.in(socket.room).emit('CardPlayed',data);
   });
+
+  socket.on('CardToHand',function(data){
+    socket.hand.push(data);
+
+    socket.emit('CardToHand',data);
+  });
 });
 
 /*
