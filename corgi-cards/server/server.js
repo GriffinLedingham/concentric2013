@@ -16,36 +16,89 @@ server.listen(8142);
 
 io.set('log level', 0);
 
+var active_cards = [];
+
+var room_players = [];
+
 io.sockets.on('connection', function (socket) {
 	console.log('connected');
 	socket.room;
 	socket.guid;
   socket.uname;
+  socket.deck;
+  socket.discard;
+
+  socket.hand = [];
 
 	socket.on('auth',function(guid_in,uname){
 		socket.guid = guid_in;
     socket.uname = uname;
 	});
 
+  socket.on('load_deck',function(deck){
+    socket.deck = deck;
+
+    //Randomize deck here
+
+  });
+
 	socket.on('join_room', function(room){
+    if(typeof room_players[room] === 'undefined')
+    {
+      room_players[room] = [];
+    }
+
+    room_players[room].push(socket);
 		socket.room = room;
 		socket.join(room);
 		socket.broadcast.emit('message',{guid:socket.guid,data:socket.uname+' joined the room'});
+    
+    if(room_players[room].length === 2)
+    {
+      start_game(room_players[room][0], room_players[room][1]);
+    }
 	});
 
   socket.on('CardMoved',function(data){
     var x = data.x;
     var y = data.y;
-    var card = data.card;
-    console.log("card moved", data);
-    socket.broadcast.emit('CardMoved',data);
+    var id = data.id;
+
+    active_cards[room][data.id].x = x;
+    active_cards[room][data.id].y = y;
+
+    //Emitting an object with a card object, an x and a y
+    socket.broadcast.emit('CardMoved',active_cards[room][data.id]);
   });
 
   socket.on('CardPlayed',function(data){
-    var card = data.card;
+    if(typeof active_cards[room] === 'undefined')
+    {
+      active_cards[room] = [];
+    }
+
+    var id = data.id;
     var x = data.x;
     var y = data.y;
-    console.log(data);
-    socket.broadcast.emit('CardPlayed',data);
+
+    active_card[room][data.id] = data;
+
+    socket.broadcast.emit('CardPlayed',active_card[room][data.id]);
   });
 });
+
+/*
+ * player1: player1's socket object
+ * player2: player2's socket object
+ */
+function start_game(player1, player2)
+{
+  player1.hand = [];
+  player2.hand = [];
+
+  for(var i = 0;i<5;i++)
+  {
+    player1.hand.push(player1.deck[i]);
+    player2.hand.push(player2.deck[i]);
+  }
+}
