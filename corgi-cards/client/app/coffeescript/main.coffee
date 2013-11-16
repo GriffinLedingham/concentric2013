@@ -29,7 +29,7 @@ class Board
 
 
     @socket.on 'CardPlayed', (data) =>
-      @cards.push new Card @, {id: data.id, name: data.name, uname: data.uname, type: data.type, position: {x: data.x, y: data.y} }
+      @cards.push new Card @, {id: data.id, name: data.name, uname: data.uname, type: data.type, x: data.x, y: data.y}
 
       $cardvm = $("##{data.id}")
       $cardvm.css "top", data.y + 'px'
@@ -38,7 +38,7 @@ class Board
     @socket.on "sync_active", (data) =>
       _.each data, (card) =>
 
-        @cards.push new Card(@, {id: card.id, name: card.name, uname: card.uname, type: card.type, position: {x: card.x, y: card.y} })
+        @cards.push new Card(@, {id: card.id, name: card.name, uname: card.uname, type: card.type, x: card.x, y: card.y})
 
         $cardvm = $("##{card.id}")
         $cardvm.css "top", card.y + 'px'
@@ -51,14 +51,14 @@ class Board
 
     card = ko.dataFor ui.helper.get(0)
 
-    @socket.emit 'CardPlayed', {id: card.id, name: card.name, uname: card.uname, type: card.type(), x: card.position()[0], y: card.position()[1]}
+    @socket.emit 'CardPlayed', {id: card.id, name: card.name, uname: card.uname, type: card.type(), x: card.x(), y: card.y()}
 
   dragstop: (ev, ui) =>
 
     card = ko.dataFor ui.helper.get(0)
 
-    card.position()[0] = ui.position.left
-    card.position()[1] = ui.position.top
+    card.x ui.position.left
+    card.y ui.position.top
 
     @socket.emit 'CardMoved', {id: card.id, name: card.name, x: ui.position.left, y: ui.position.top}
 

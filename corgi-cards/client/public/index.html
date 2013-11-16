@@ -15,8 +15,6 @@
   </article>
 
   <!-- ko with: player -->
-    <div class="play" data-bind="click: playCard"></div>
-
     <!-- ko foreach: hand -->
         <div class="card hand" data-bind="text:name, draggable: {dragstop: $parent.dragstop, enabled: isMine}, attr: {id: id}, css: {monster: type() == 'monster', spell: type() == 'spell'}"></div>
     <!-- /ko -->

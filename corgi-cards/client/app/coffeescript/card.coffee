@@ -13,7 +13,8 @@ class window.Card
 
     @img = data.img
 
-    @position = ko.observable [data.position.x, data.position.y]
+    @x = ko.observable data.x
+    @y = ko.observable data.y
 
 
   isMine: (card, ui) =>

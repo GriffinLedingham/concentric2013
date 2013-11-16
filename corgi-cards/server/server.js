@@ -43,20 +43,20 @@ for(var i=0;i<20;i++)
 
 
 io.sockets.on('connection', function (socket) {
-	console.log('connected');
-	socket.room;
+  console.log('connected');
+  socket.room;
   socket.uname;
   socket.deck;
   socket.discard;
 
   socket.hand = [];
 
-	socket.on('auth',function(uname){
+  socket.on('auth',function(uname){
     socket.uname = uname;
-	});
+  });
 
-	socket.on('join_room', function(room){
-    console.log(room);
+  socket.on('join_room', function(room){
+    console.log("Player joined room: ", room);
     if(typeof room_players[room] === 'undefined')
     {
       room_players[room] = [];
@@ -67,11 +67,10 @@ io.sockets.on('connection', function (socket) {
     // TODO: If there are already two people in the room, enter spectator mode.
 
     room_players[room].push(socket);
-		socket.room = room;
-		socket.join(room);
+    socket.room = room;
+    socket.join(room);
     if(active_cards[room] !== undefined){
       socket.emit('sync_active',active_cards[room]);
-
       if(room_players[room] !== 'undefined')
       {
         if(room_players[room][0] !== 'undefined')
@@ -95,11 +94,12 @@ io.sockets.on('connection', function (socket) {
     if(room_players[room].length === 2)
     {
       start_game(room_players[room][0], room_players[room][1]);
+      active_cards[room] = [];
     }
-	});
+  });
 
   socket.on('CardMoved',function(data){
-    //console.log("Card Moved\n", data)
+    console.log("Card Moved\n", data)
 
     var card_index;
 
@@ -124,6 +124,8 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('HandMoved',function(data){
+    console.log("Hand Moved\n", data)
+
     for(var i = 0;i<socket.hand.length;i++)
     {
       if(socket.hand[i].id === data.id)
@@ -134,7 +136,7 @@ io.sockets.on('connection', function (socket) {
       }
     }
 
-    socket.broadcast.emit('HandMoved',{x:data.x,y:data.y,id:data.id});    
+    socket.broadcast.emit('HandMoved',{x:data.x,y:data.y,id:data.id});
   });
 
   socket.on('CardPlayed',function(data){
@@ -155,7 +157,6 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('CardToHand',function(data){
-    console.log("ASDASDASDASDASD");
     socket.hand.push(data);
 
     socket.emit('CardToHand',data);
@@ -190,7 +191,7 @@ function start_game(player1, player2)
 }
 
 function draw_card(player)
-{ 
+{
     var top_deck = player.deck[0];
     player.hand.push(top_deck);
     player.deck.splice(0,1);
@@ -216,7 +217,7 @@ function s4(){
              .substring(1);
 }
 
-function guid(){ 
+function guid(){
   return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
            s4() + '-' + s4() + s4() + s4();
 }

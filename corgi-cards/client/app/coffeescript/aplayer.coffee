@@ -16,45 +16,48 @@ class window.Player
     @opponentHand = ko.observableArray []
 
     @socket.on "CardDraw", (data) =>
-      data.position = {x: Math.random()*200 + 900, y: Math.random()*600}
+      data.x = Math.random()*200 + 900
+      data.y = Math.random()*600
       card = new Card @, data
       @hand.push card
 
       $cardvm = $("##{card.id}")
-      $cardvm.css "top", data.position.y + 'px'
-      $cardvm.css "left", data.position.x + 'px'
+      $cardvm.css "top", data.y + 'px'
+      $cardvm.css "left", data.x + 'px'
 
-      @socket.emit "HandMoved", {id: card.id, x: data.position.x, y: data.position.y}
+      @socket.emit "HandMoved", {id: card.id, x: data.x, y: data.y}
 
     @socket.on "CardPlayed", (data) =>
       if (card = (_.find @hand(), (card) => card.id is data.id))
         @hand _.without @hand(), card
 
       if (card = (_.find @opponentHand(), (card) => card.id is data.id))
-        @opponentHand _.without @opponentHand(), card      
+        @opponentHand _.without @opponentHand(), card
 
     @socket.on "SyncHand", (data) =>
+      console.log data
       _.each data, (card) =>
         @hand.push new Card(@, card)
 
+        $cardvm = $("##{card.id}")
+
+        $cardvm.css "top", card.y + 'px'
+        $cardvm.css "left", card.x + 'px'
+
+
     @socket.on "OpponentDraw", (data) =>
-      @opponentHand.push {id: data, position: {x: -100, y: -100}}
+      @opponentHand.push {id: data, x: -100, y: -100}
 
     @socket.on "HandMoved", (data) =>
       card = _.find @opponentHand(), (card) =>
         card.id is data.id
 
-      card?.position.x = data.x
-      card?.position.y = data.y
-
-      $cardvm = $("##{card.id}")
+      card?.x = data.x
+      card?.y = data.y
+      $cardvm = $("##{data.id}")
 
       $cardvm.css "top", data.y + 'px'
       $cardvm.css "left", data.x + 'px'
-
-
-  playCard: (card, ui) =>
-    @socket.emit 'CardToHand', {id: guid(), name: "fuck ya", uname: app.username(), position: {x: Math.random()*200 + 900, y: Math.random()*600} }
 
   dragstop: (card, ui) =>
 
@@ -62,8 +65,8 @@ class window.Player
 
     return unless card
 
-    card.position()[0] = ui.position.left
-    card.position()[1] = ui.position.top
+    card.x ui.position.left
+    card.y ui.position.top
 
     @socket.emit "HandMoved", {id: card.id, x: ui.position.left, y: ui.position.top}
 
