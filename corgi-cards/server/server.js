@@ -41,6 +41,7 @@ io.sockets.on('connection', function (socket) {
   });
 
 	socket.on('join_room', function(room){
+    console.log(room);
     if(typeof room_players[room] === 'undefined')
     {
       room_players[room] = [];
@@ -49,9 +50,11 @@ io.sockets.on('connection', function (socket) {
     room_players[room].push(socket);
 		socket.room = room;
 		socket.join(room);
+    if(active_cards[room] !== undefined){
 
-    socket.emit('sync_active',active_cards[room]);
 
+      socket.emit('sync_active',active_cards[room]);
+    }
     if(room_players[room].length === 2)
     {
       //start_game(room_players[room][0], room_players[room][1]);
@@ -59,16 +62,27 @@ io.sockets.on('connection', function (socket) {
 	});
 
   socket.on('CardMoved',function(data){
-    console.log("Card Moved\n", data)
+    //console.log("Card Moved\n", data)
+    var card_index;
+
+    for(var i = 0;i< active_cards[socket.room].length; i++)
+    {
+      if(active_cards[socket.room][i].id === data.id)
+      {
+        card_index = i;
+        break;
+      }
+    }
+
     var x = data.x;
     var y = data.y;
     var id = data.id;
 
-    active_cards[socket.room][data.id].x = x;
-    active_cards[socket.room][data.id].y = y;
+    active_cards[socket.room][card_index].x = x;
+    active_cards[socket.room][card_index].y = y;
 
     //Emitting an object with a card object, an x and a y
-    socket.broadcast.emit('CardMoved',active_cards[socket.room][data.id]);
+    socket.broadcast.emit('CardMoved',active_cards[socket.room][card_index]);
   });
 
   socket.on('CardPlayed',function(data){
@@ -87,9 +101,15 @@ io.sockets.on('connection', function (socket) {
     var x = data.x;
     var y = data.y;
 
-    active_cards[socket.room][data.id] = data;
+    active_cards[socket.room].push(data);
 
-    io.sockets.in(socket.room).emit('CardPlayed',active_cards[socket.room][data.id]);
+    io.sockets.in(socket.room).emit('CardPlayed',data);
+  });
+
+  socket.on('CardToHand',function(data){
+    socket.hand.push(data);
+
+    socket.emit('CardToHand',data);
   });
 });
 
