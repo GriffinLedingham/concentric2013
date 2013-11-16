@@ -19,7 +19,7 @@ class Board
     @socket.on 'CardMoved', (data) =>
 
       card = _.find @cards(), (card) =>
-        card.card.id is data.card.id
+        card.id is data.id
 
       return unless card
 
