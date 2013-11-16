@@ -7,7 +7,7 @@ class window.Card
     @id = data.id
     @name = data.name
 
-    @type = data.type
+    @type = ko.observable data.type
 
     @uname = data.uname
 
@@ -17,5 +17,4 @@ class window.Card
 
 
   isMine: (card, ui) =>
-    console.log app.username(), @uname
     app.username() is @uname
