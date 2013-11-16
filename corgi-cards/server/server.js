@@ -34,10 +34,7 @@ io.sockets.on('connection', function (socket) {
 	});
 
   socket.on('load_deck',function(deck){
-    socket.deck = deck;
-
-    //Randomize deck here
-
+    socket.deck = shuffleArray(deck);
   });
 
 	socket.on('join_room', function(room){
@@ -65,6 +62,12 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('CardMoved',function(data){
     //console.log("Card Moved\n", data)
+
+    if(data.uname !== socket.uname)
+    {
+      return;
+    }
+
     var card_index;
 
     for(var i = 0;i< active_cards[socket.room].length; i++)
@@ -88,7 +91,7 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('CardPlayed',function(data){
-    if(typeof socket.room === 'undefined')
+    if(typeof socket.room === 'undefined' || typeof socket.uname === 'undefined')
     {
       return;
     }
@@ -98,10 +101,6 @@ io.sockets.on('connection', function (socket) {
     {
       active_cards[socket.room] = [];
     }
-
-    var id = data.id;
-    var x = data.x;
-    var y = data.y;
 
     active_cards[socket.room].push(data);
 
@@ -113,6 +112,12 @@ io.sockets.on('connection', function (socket) {
     socket.hand.push(data);
 
     socket.emit('CardToHand',data);
+  });
+
+  socket.on('HandMoved',function(data){
+    var x = data.x;
+    var y = data.y;
+
   });
 });
 
@@ -129,5 +134,24 @@ function start_game(player1, player2)
   {
     player1.hand.push(player1.deck[i]);
     player2.hand.push(player2.deck[i]);
+
+    player1.deck.splice(i,1);
+    player2.deck.splice(i,1);
   }
+}
+
+function draw_card(player)
+{
+    player.hand.push(player.deck[0]);
+    player.deck.splice(0,1);
+}
+
+function shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    return array;
 }

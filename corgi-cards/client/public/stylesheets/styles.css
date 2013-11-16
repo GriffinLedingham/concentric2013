@@ -1,3 +1,11 @@
+ul {
+  padding: 0;
+  margin: 0; }
+  ul li {
+    list-style: none;
+    padding: 0;
+    margin: 0; }
+
 body {
   padding: 0;
   margin: 0; }
@@ -9,15 +17,25 @@ body {
   background-color: red; }
 
 #board {
-  position: absol;
+  position: absolute;
   width: 900px;
   height: 600px;
   background-color: green; }
 
 .play {
-  width: 200px;
-  height: 200px;
+  width: 100px;
+  height: 100px;
   background-color: blue;
   position: absolute;
-  left: 1000px;
-  top: 200px; }
+  bottom: 0;
+  right: 0; }
+
+.login {
+  position: absolute;
+  top: 50px;
+  left: 10px; }
+
+#hand {
+  position: absolute;
+  top: 700px;
+  width: 100%; }
