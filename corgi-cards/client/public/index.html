@@ -8,11 +8,16 @@
 
 <body>
 
-
-  <!-- ko foreach: cards -->
-    <!-- ko with: card -->
-      <div class="card" data-bind="text:name, draggable: {dragstop: $parent.dragstop}, attr: {id: id}"></div>
+  <article id="board" data-bind="with: board">
+    <!-- ko foreach: cards -->
+      <!-- ko with: card -->
+        <div class="card" data-bind="text:name, draggable: {dragstop: $parent.dragstop}, attr: {id: id}"></div>
+      <!-- /ko -->
     <!-- /ko -->
+  </article>
+
+  <!-- ko with: player -->
+    <div class="play" data-bind="click: playCard"></div>
   <!-- /ko -->
 
 

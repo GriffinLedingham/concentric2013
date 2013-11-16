@@ -8,40 +8,15 @@ guid = =>
            s4() + '-' + s4() + s4() + s4()
 
 
+class Board
+  constructor: (@delegate) ->
+    {
+      @socket
+    } = @delegate
 
-window.socket = io.connect(window.location.origin)
+    @cards = ko.observableArray []
 
-socket.on 'connect', ->
-  socket.emit 'auth', guid()
-  socket.emit 'join_room','1'
-
-c1 = new Card
-  id: guid()
-  name: "poop"
-
-c2 = new Card
-  id: guid()
-  name: "thing2"
-
-
-Cards = [c1, c2]
-
-class AppViewModel
-  constructor: () ->
-
-    @host = window.location.origin
-
-    @cards = ko.observableArray()
-    y = 0
-    _.each Cards, (card) =>
-      @cards.push new CardViewModel @, {card: card, position: {x:0, y: y}}
-
-      socket.emit 'CardPlayed', {x:0, y: y, card: card}
-
-      y += 120
-
-
-    socket.on 'CardMoved', (data) =>
+    @socket.on 'CardMoved', (data) =>
 
       card = _.find @cards(), (card) =>
         card.card.id is data.card.id
@@ -49,15 +24,29 @@ class AppViewModel
       return unless card
 
       $cardvm = $("##{card.card.id}")
-
-
-
       $cardvm.css "top", data.y + 'px'
       $cardvm.css "left", data.x + 'px'
 
 
-    socket.on 'CardPlayed', (data) =>
-      @cards.push new CardViewModel @, {card: data.card, position: {x: data.x, y: data.y} }
+    @socket.on 'CardPlayed', (data) =>
+      @cards.push new Card(@, {id: data.id, name: data.name, position: {x: data.x, y: data.y} })
+
+
+
+class AppViewModel
+  constructor: () ->
+
+    @socket = io.connect(window.location.origin)
+
+    @socket.on 'connect', ->
+      @socket.emit 'auth', guid()
+      @socket.emit 'join_room','1'
+
+    @host = window.location.origin
+
+    @board = new Board @
+
+    @player = new Player @
 
 
 app = new AppViewModel

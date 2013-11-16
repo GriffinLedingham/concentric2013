@@ -1,8 +1,18 @@
-body {
-  background-color: green; }
-
 .card {
   position: absolute;
   width: 200px;
   height: 200px;
   background-color: red; }
+
+#board {
+  width: 900px;
+  height: 600px;
+  background-color: green; }
+
+.play {
+  width: 200px;
+  height: 200px;
+  background-color: blue;
+  position: absolute;
+  left: 1000px;
+  top: 200px; }
