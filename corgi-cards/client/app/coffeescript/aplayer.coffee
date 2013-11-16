@@ -14,9 +14,12 @@ class window.Player
 
     @discard = ko.observableArray []
 
+    @socket.on "CardToHand", (data) =>
+      @hand.push new Card @, data
+
 
   playCard: (card, ui) =>
-    @socket.emit 'CardPlayed', {id: guid(), name: "fuck ya", x: Math.random()*900, y: Math.random()*600}
+    @socket.emit 'CardToHand', {id: guid(), name: "fuck ya", x: Math.random()*200 + 900, y: Math.random()*600}
 
   login: (player, ev) =>
     if ev.keyCode is 13
@@ -30,6 +33,3 @@ class window.Player
       @socket.emit 'join_room', @room()
 
     true
-
-  woo: () =>
-    console.log "ashir"

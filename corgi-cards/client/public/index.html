@@ -8,7 +8,7 @@
 
 <body>
 
-  <article id="board" data-bind="with: board">
+  <article id="board" data-bind="with: board, droppable: {accept: '.card', drop: board.dropCard}">
     <!-- ko foreach: cards -->
         <div class="card" data-bind="text:name, draggable: {dragstop: dragstop}, attr: {id: id}"></div>
     <!-- /ko -->

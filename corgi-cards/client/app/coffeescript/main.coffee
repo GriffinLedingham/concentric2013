@@ -36,6 +36,7 @@ class Board
       $cardvm.css "left", data.x + 'px'
 
     @socket.on "sync_active", (data) =>
+      console.log data
       _.each data, (card) =>
 
         @cards.push new Card(@, {id: card.id, name: card.name, position: {x: card.x, y: card.y} })
@@ -46,6 +47,14 @@ class Board
 
   clear: () =>
     @cards.splice(0)
+
+  dropCard: (data, ui) =>
+
+    card = ko.dataFor ui.helper.get(0)
+
+    console.log card.position()
+
+    @socket.emit 'CardPlayed', {}
 
 
 class AppViewModel

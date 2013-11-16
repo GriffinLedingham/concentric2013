@@ -5,10 +5,10 @@ var AppViewModel, Board, app, guid, s4,
 
 window.Player = (function() {
   function Player(delegate) {
-    var _ref;
+    var _ref,
+      _this = this;
 
     this.delegate = delegate;
-    this.woo = __bind(this.woo, this);
     this.join = __bind(this.join, this);
     this.login = __bind(this.login, this);
     this.playCard = __bind(this.playCard, this);
@@ -18,13 +18,16 @@ window.Player = (function() {
     this.hand = ko.observableArray([]);
     this.deck = ko.observableArray([]);
     this.discard = ko.observableArray([]);
+    this.socket.on("CardToHand", function(data) {
+      return _this.hand.push(new Card(_this, data));
+    });
   }
 
   Player.prototype.playCard = function(card, ui) {
-    return this.socket.emit('CardPlayed', {
+    return this.socket.emit('CardToHand', {
       id: guid(),
       name: "fuck ya",
-      x: Math.random() * 900,
+      x: Math.random() * 200 + 900,
       y: Math.random() * 600
     });
   };
@@ -44,10 +47,6 @@ window.Player = (function() {
     return true;
   };
 
-  Player.prototype.woo = function() {
-    return console.log("ashir");
-  };
-
   return Player;
 
 })();
@@ -64,8 +63,8 @@ window.Card = (function() {
   }
 
   Card.prototype.dragstop = function(ev, ui) {
-    this.position()[0] = $(ui.target).css("top");
-    this.position()[1] = $(ui.target).css("left");
+    this.position()[0] = ui.position.left;
+    this.position()[1] = ui.position.top;
     return this.socket.emit('CardMoved', {
       id: this.id,
       name: this.name,
@@ -89,6 +88,16 @@ ko.bindingHandlers.draggable = {
   }
 };
 
+ko.bindingHandlers.droppable = {
+  init: function(element, valueAccessor) {
+    var options;
+
+    options = ko.utils.unwrapObservable(valueAccessor());
+    element = $(element);
+    return $(element).droppable(options);
+  }
+};
+
 s4 = function() {
   return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
 };
@@ -102,6 +111,7 @@ Board = (function() {
     var _this = this;
 
     this.delegate = delegate;
+    this.dropCard = __bind(this.dropCard, this);
     this.clear = __bind(this.clear, this);
     this.socket = this.delegate.socket;
     this.cards = ko.observableArray([]);
@@ -133,10 +143,36 @@ Board = (function() {
       $cardvm.css("top", data.y + 'px');
       return $cardvm.css("left", data.x + 'px');
     });
+    this.socket.on("sync_active", function(data) {
+      console.log(data);
+      return _.each(data, function(card) {
+        var $cardvm;
+
+        _this.cards.push(new Card(_this, {
+          id: card.id,
+          name: card.name,
+          position: {
+            x: card.x,
+            y: card.y
+          }
+        }));
+        $cardvm = $("#" + card.id);
+        $cardvm.css("top", card.y + 'px');
+        return $cardvm.css("left", card.x + 'px');
+      });
+    });
   }
 
   Board.prototype.clear = function() {
     return this.cards.splice(0);
+  };
+
+  Board.prototype.dropCard = function(data, ui) {
+    var card;
+
+    card = ko.dataFor(ui.helper.get(0));
+    console.log(card.position());
+    return this.socket.emit('CardPlayed', {});
   };
 
   return Board;

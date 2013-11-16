@@ -13,7 +13,7 @@ class window.Card
 
 
   dragstop: (ev, ui) =>
-    @position()[0] = $(ui.target).css("top")
-    @position()[1] = $(ui.target).css("left")
+    @position()[0] = ui.position.left
+    @position()[1] = ui.position.top
 
     @socket.emit 'CardMoved', {id: @id, name: @name, x: ui.position.left, y: ui.position.top}
