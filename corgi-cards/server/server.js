@@ -252,16 +252,130 @@ function guid(){
 
 function getStats(name)
 {
-  //
+  //{attack:,health:,special:}
 
   //Switch statement
   switch(name)
   {
     case 'RDW1':
-      return {}
-
-    case 0 :
-
+      return {attack:1,health:1,special:null};
+      break;
+    case 'RDW2':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'RDW3':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'RDW4':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'RDW5':
+      return {attack:1,health:2,special:null};
+      break;
+    case 'RDW6':
+      return {attack:1,health:2,special:null};
+      break;
+    case 'RDW7':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'RDW8':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'RDW9':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'RDW10':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'RDW11':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'RDW12':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'RDW13':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'RDW14':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'RDW15':
+      return {attack:1,health:2,special:null};
+      break;
+    case 'RDW16':
+      return {attack:1,health:2,special:null};
+      break;
+    case 'RDW17':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'RDW18':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'RDW19':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'RDW20':
+      return {attack:1,health:1,special:null};
+      break; 
+    case 'Control1':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'Control2':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'Control3':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'Control4':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'Control5':
+      return {attack:1,health:2,special:null};
+      break;
+    case 'Control6':
+      return {attack:1,health:2,special:null};
+      break;
+    case 'Control7':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'Control8':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'Control9':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'Control10':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'Control11':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'Control12':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'Control13':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'Control14':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'Control15':
+      return {attack:1,health:2,special:null};
+      break;
+    case 'Control16':
+      return {attack:1,health:2,special:null};
+      break;
+    case 'Control17':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'Control18':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'Control19':
+      return {attack:1,health:1,special:null};
+      break;
+    case 'Control20':
+      return {attack:1,health:1,special:null};
       break;
   }
 }
