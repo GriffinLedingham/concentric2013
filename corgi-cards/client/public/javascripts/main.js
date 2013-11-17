@@ -17,8 +17,8 @@ window.Player = (function() {
     this.opponentHand = ko.observableArray([]);
     this.socket.on("CardDraw", function(data) {
       var $cardvm, card;
-      data.x = Math.random() * 200 + 900;
-      data.y = Math.random() * 600;
+      data.x = Math.random() * 1300;
+      data.y = 700;
       card = new Card(_this, data);
       _this.hand.push(card);
       $cardvm = $("#" + card.id);
@@ -84,6 +84,7 @@ window.Player = (function() {
         return $cardvm.css("left", card.x + 'px');
       });
     });
+    this.socket.on("PlayerLifeChange", function(data) {});
   }
 
   Player.prototype.dragstop = function(card, ui) {
@@ -185,6 +186,8 @@ Board = (function() {
   function Board(delegate) {
     var _this = this;
     this.delegate = delegate;
+    this.handleOpponentClick = __bind(this.handleOpponentClick, this);
+    this.handleSelfClick = __bind(this.handleSelfClick, this);
     this.handleBoardClick = __bind(this.handleBoardClick, this);
     this.handleCardClick = __bind(this.handleCardClick, this);
     this.dragstop = __bind(this.dragstop, this);
@@ -211,7 +214,7 @@ Board = (function() {
       _this.cards.push(new Card(_this, data));
       $cardvm = $("#" + data.id);
       $cardvm.css("top", data.y + 'px');
-      return $cardvm.css("left", data.x + 'px');
+      return $cardvm.css("left", (data.x - 200) + 'px');
     });
     this.socket.on("sync_active", function(data) {
       return _.each(data, function(card) {
@@ -219,23 +222,37 @@ Board = (function() {
         _this.cards.push(new Card(_this, data));
         $cardvm = $("#" + card.id);
         $cardvm.css("top", card.y + 'px');
-        return $cardvm.css("left", card.x + 'px');
+        return $cardvm.css("left", (card.x - 200) + 'px');
       });
+    });
+    this.socket.on("SpellCast", function(cardId) {
+      var card;
+      console.log(cardId);
+      if ((card = _.find(_this.cards(), function(card) {
+        return card.id === cardId;
+      }))) {
+        _this.cards(_.without(_this.cards(), card));
+      }
+      _this.target(null);
+      return _this.action(null);
     });
     this.socket.on("CardInteraction", function(data) {
       var action, combat, target;
       if (data.type === 'attack') {
         combat = data.result;
         action = _.find(_this.cards(), function(card) {
-          return card.id === combat.action.id;
+          var _ref;
+          return card.id === ((_ref = combat.action) != null ? _ref.id : void 0);
         });
         target = _.find(_this.cards(), function(card) {
           return card.id === combat.target.id;
         });
-        if (combat.action.life === 0) {
-          _this.cards(_.without(_this.cards(), action));
-        } else {
-          action.stats.health(combat.action.life);
+        if (action != null) {
+          if (combat.action.life === 0) {
+            _this.cards(_.without(_this.cards(), action));
+          } else {
+            action.stats.health(combat.action.life);
+          }
         }
         if (combat.target.life === 0) {
           _this.cards(_.without(_this.cards(), target));
@@ -274,6 +291,7 @@ Board = (function() {
   };
 
   Board.prototype.handleCardClick = function(card, ui) {
+    var action, target;
     if (card.isMine(card)) {
       if (this.action() === card) {
         this.action(null);
@@ -288,7 +306,9 @@ Board = (function() {
       }
     }
     if (this.action() && this.target()) {
-      this.socket.emit("CardInteraction", this.action().id, this.target().id);
+      action = _.isString(this.action()) ? this.action() : this.action().id;
+      target = _.isString(this.target()) ? this.target() : this.target().id;
+      this.socket.emit("CardInteraction", action, target);
     }
     return false;
   };
@@ -297,6 +317,34 @@ Board = (function() {
     console.log("here");
     this.action(null);
     return this.target(null);
+  };
+
+  Board.prototype.handleSelfClick = function() {
+    var action, target;
+    if (this.target() !== "self") {
+      this.target("self");
+    } else {
+      this.target(null);
+    }
+    if (this.action() && this.target()) {
+      action = _.isString(this.action()) ? this.action() : this.action().id;
+      target = _.isString(this.target()) ? this.target() : this.target().id;
+      return this.socket.emit("CardInteraction", action, target);
+    }
+  };
+
+  Board.prototype.handleOpponentClick = function() {
+    var action, target;
+    if (this.target() !== "opponent") {
+      this.target("opponent");
+    } else {
+      this.target(null);
+    }
+    if (this.action() && this.target()) {
+      action = _.isString(this.action()) ? this.action() : this.action().id;
+      target = _.isString(this.target()) ? this.target() : this.target().id;
+      return this.socket.emit("CardInteraction", action, target);
+    }
   };
 
   return Board;
