@@ -358,12 +358,16 @@ function attack(attacker,defender,socket)
     var p1_atk = attacker.stats.attack;
 
     opponent.life = opponent.life - p1_atk;
+    opponent.emit('PlayerLife', {opponent:self.life,self:opponent.life});
+    self.emit('PlayerLife', {opponent:opponent.life,self:self.life});
   }
   else if(defender === 'self')
   {
     var p1_atk = attacker.stats.attack;
 
     self.life = self.life - p1_atk;
+    opponent.emit('PlayerLife', {opponent:self.life,self:opponent.life});
+    self.emit('PlayerLife', {opponent:opponent.life,self:self.life});
   }
   else
   {
@@ -472,7 +476,7 @@ function spell(spell,defender,socket)
       case 'damage':
         opponent.life = opponent.life - spell.stats.special.value;
         self.life = self.life - spell.stats.special.value;
-        
+
         opponent.emit('PlayerLife', {opponent:self.life,self:opponent.life});
         self.emit('PlayerLife', {opponent:opponent.life,self:self.life});
 

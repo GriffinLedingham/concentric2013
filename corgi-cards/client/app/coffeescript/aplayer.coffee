@@ -5,7 +5,8 @@ class window.Player
       @socket
     } = @delegate
 
-
+    @life = ko.observable 30
+    @diff = ko.observable false
 
     @hand = ko.observableArray []
 
