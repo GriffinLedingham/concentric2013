@@ -15,13 +15,6 @@ class window.Player
 
     @opponentHand = ko.observableArray []
 
-    @socket.on "SpellCast", (cardId) =>
-      if (card = (_.find @opponentHand(), (card) => card.id is cardId))
-        @opponentHand _.without @opponentHand(), card
-
-      if (card = (_.find @hand(), (card) => card.id is cardId))
-        @hand _.without @hand(), card
-
     @socket.on "CardDraw", (data) =>
       data.x = Math.random()*1300
       data.y = 700

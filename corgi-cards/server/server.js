@@ -37,7 +37,16 @@ for(var i =0;i<20;i++)
 
 for(var i=0;i<20;i++)
 {
-  var name = 'Control'+1;
+  var name = "Draw";
+
+  if(i % 2)
+    name = "Draw";
+  else
+    name = "Damage";
+
+  if(i % 5)
+    name = "DamageAll";
+
   var stats_obj = getStats(name);
   control.push({
               name: name,
@@ -220,7 +229,8 @@ io.sockets.on('connection', function (socket) {
 
     console.log(action_id, target_id, "niggers!!");
 
-    if(target_id === "all" || target_id === "self"  || target_id === "opponent" )
+
+    if(target_id === "self"  || target_id === "opponent" )
     {
       opponent_card = target_id;
 
@@ -230,6 +240,11 @@ io.sockets.on('connection', function (socket) {
         {
           player_card = active_cards[socket.room][i];
         }
+      }
+
+      if(player_card.name === 'DamageAll')
+      {
+        opponent_card = 'all';
       }
     } else {
       for(var i = 0;i<active_cards[socket.room].length;i++)
@@ -243,6 +258,11 @@ io.sockets.on('connection', function (socket) {
         {
           opponent_card = active_cards[socket.room][i];
         }
+      }
+
+      if(typeof player_card !== 'undefined')
+      {
+        opponent_card = 'all';
       }
     }
     if(typeof player_card === 'undefined' || (typeof opponent_card === 'undefined' &&
@@ -422,24 +442,27 @@ function spell(spell,defender,socket)
         self.life = self.life - spell.stats.special.value;
         for(var i = 0;i<active_cards[socket.room].length;i++)
         {
-          var defender_life = active_cards[socket.room].stats.health;
-          var spell_damage = spell.stats.special.value;
-
-          defender_life = defender_life - spell_damage;
-
-          if(defender_life < 1)
+          if(active_cards[socket.room][i].stats.attack)
           {
-            active_cards[socket.room].splice(i,1);
+            var defender_life = active_cards[socket.room][i].stats.health;
+            var spell_damage = spell.stats.special.value;
+
+            defender_life = defender_life - spell_damage;
+
+            if(defender_life < 1)
+            {
+              active_cards[socket.room].splice(i,1);
+            }
+            else
+            {
+              active_cards[socket.room][i].stats.health = defender_life;
+            }
+            var result_obj = {
+              action: null,
+              target: {id: active_cards[socket.room][i].id, damage: spell_damage, life: defender_life}
+            };
+            io.sockets.in(socket.room).emit('CardInteraction', {type:'attack', result: result_obj});
           }
-          else
-          {
-            active_cards[socket.room][i].stats.health = defender_life;
-          }
-          var result_obj = {
-            action: null,
-            target: {id: active_cards[socket.room][i].id, damage: spell_damage, life: defender_life}
-          };
-          io.sockets.in(socket.room).emit('CardInteraction', {type:'attack', result: result_obj});
         }
         //TODO: Return Results
         break;
@@ -465,7 +488,7 @@ function spell(spell,defender,socket)
     switch(spell.stats.special.ability)
     {
       case 'draw':
-        console.log("asjkldjalsd");
+
         for(var i = 0;i<spell.stats.special.value;i++)
         {
           draw_card(self);
@@ -656,65 +679,14 @@ function getStats(name)
     case 'RDW20':
       return {attack:1,health:5,special:[]};
       break;
-    case 'Control1':
+    case 'Draw':
       return {attack: null, health: null, special: {ability: "draw", value: 1}};
       break;
-    case 'Control2':
-      return {attack: null, health: null, special: {ability: "draw", value: 1}};
+    case 'Damage':
+      return {attack: null, health: null, special: {ability: "damage", value: 2}};
       break;
-    case 'Control3':
-      return {attack: null, health: null, special: {ability: "draw", value: 1}};
-      break;
-    case 'Control4':
-      return {attack: null, health: null, special: {ability: "draw", value: 1}};
-      break;
-    case 'Control5':
-      return {attack: null, health: null, special: {ability: "draw", value: 1}};
-      break;
-    case 'Control6':
-      return {attack: null, health: null, special: {ability: "draw", value: 1}};
-      break;
-    case 'Control7':
-      return {attack: null, health: null, special: {ability: "draw", value: 1}};
-      break;
-    case 'Control8':
-      return {attack: null, health: null, special: {ability: "draw", value: 1}};
-      break;
-    case 'Control9':
-      return {attack: null, health: null, special: {ability: "draw", value: 1}};
-      break;
-    case 'Control10':
-      return {attack: null, health: null, special: {ability: "draw", value: 1}};
-      break;
-    case 'Control11':
-      return {attack: null, health: null, special: {ability: "draw", value: 1}};
-      break;
-    case 'Control12':
-      return {attack: null, health: null, special: {ability: "draw", value: 1}};
-      break;
-    case 'Control13':
-      return {attack: null, health: null, special: {ability: "draw", value: 1}};
-      break;
-    case 'Control14':
-      return {attack: null, health: null, special: {ability: "draw", value: 1}};
-      break;
-    case 'Control15':
-      return {attack: null, health: null, special: {ability: "draw", value: 1}};
-      break;
-    case 'Control16':
-      return {attack: null, health: null, special: {ability: "draw", value: 1}};
-      break;
-    case 'Control17':
-      return {attack: null, health: null, special: {ability: "draw", value: 1}};
-      break;
-    case 'Control18':
-      return {attack: null, health: null, special: {ability: "draw", value: 1}};
-      break;
-    case 'Control19':
-      return {attack: null, health: null, special: {ability: "draw", value: 1}};
-      break;
-    case 'Control20':
-      return {attack: null, health: null, special: {ability: "draw", value: 1}};
+    case 'DamageAll':
+      return {attack: null, health: null, special: {ability: "damage", value: 1}};
       break;
   }
 }

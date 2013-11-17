@@ -48,6 +48,14 @@ class Board
         $cardvm.css "top", (card.y) + 'px'
         $cardvm.css "left", (card.x - 200) + 'px'
 
+    @socket.on "SpellCast", (cardId) =>
+      console.log cardId
+      if (card = (_.find @cards(), (card) => card.id is cardId))
+        @cards _.without @cards(), card
+
+      @target null
+      @action null
+
     @socket.on "CardInteraction", (data) =>
 
       if data.type is 'attack'
@@ -55,15 +63,16 @@ class Board
         combat = data.result
 
         action = _.find @cards(), (card) =>
-          card.id is combat.action.id
+          card.id is combat.action?.id
 
         target = _.find @cards(), (card) =>
             card.id is combat.target.id
 
-        if combat.action.life is 0
-          @cards _.without @cards(), action
-        else
-          action.stats.health combat.action.life
+        if action?
+          if combat.action.life is 0
+            @cards _.without @cards(), action
+          else
+            action.stats.health combat.action.life
 
         if combat.target.life is 0
           @cards _.without @cards(), target
