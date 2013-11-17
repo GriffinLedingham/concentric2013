@@ -93,7 +93,11 @@ class Board
 
   dropCard: (data, ui) =>
     return unless @activeTurn()
+
     card = ko.dataFor ui.helper.get(0)
+
+    return unless app.self.canPlay card
+
 
     @socket.emit 'CardPlayed', card.id
 
@@ -210,6 +214,7 @@ class AppViewModel
         @self.haveUsedResource false
         @self.strengthLeft @self.strength()
         @self.intelLeft @self.intel()
+
 
 
 
