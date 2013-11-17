@@ -210,8 +210,35 @@ io.sockets.on('connection', function (socket) {
     {
       return;
     }
+    console.log(socket.strength,card.type,card.cost);
+    console.log("Card Played\n", card);
 
-    console.log("Card Played\n", card)
+    if(card.type === 'monster')
+    {
+      if(socket.strength < card.stats.cost)
+      {
+        console.log('Not enough mana.');
+        return;
+      } 
+      else
+      {
+        socket.strength = socket.strength - card.stats.cost;
+        io.sockets.emit('AddStrength',{uname:socket.uname, value: socket.strength, cumulative: socket.c_strength});
+      }
+    }
+    else if(card.type === 'spell')
+    {
+      if(socket.intel < card.stats.cost)
+      {
+        console.log('Not enough mana.');
+        return;
+      }
+      else
+      {
+        socket.intel = socket.intel - card.stats.cost;
+        io.sockets.emit('AddIntel',{uname:socket.uname, value: socket.intel, cumulative: socket.c_intel});
+      }
+    }
 
     if(typeof active_cards[socket.room] === 'undefined')
     {
@@ -405,6 +432,8 @@ function start_turn(player)
   player.intel = player.c_intel;
   draw_card(player);
   io.sockets.in(player.room).emit('StartTurn',player.uname);
+  io.sockets.emit('AddStrength',{uname:player.uname, value: player.strength, cumulative: player.c_strength});
+  io.sockets.emit('AddIntel',{uname:player.uname, value: player.intel, cumulative: player.c_intel});
 }
 
 function draw_card(player)
@@ -793,19 +822,19 @@ function getStats(name)
   switch(name)
   {
     case 'OneOne':
-      return {attack:1,health:1,special:[]};
+      return {attack:1,health:1,special:[], cost:1};
       break;
     case 'TwoTwo':
-      return {attack:2,health:2,special:[]};
+      return {attack:2,health:2,special:[], cost:2};
       break;
     case 'Draw':
-      return {attack: null, health: null, special: {ability: "draw", value: 1}};
+      return {attack: null, health: null, special: {ability: "draw", value: 1}, cost:1};
       break;
     case 'Heal':
-      return {attack: null, health: null, special: {ability: "heal", value: 2}};
+      return {attack: null, health: null, special: {ability: "heal", value: 2}, cost:1};
       break;
     case 'DamageAll':
-      return {attack: null, health: null, special: {ability: "damage", value: 1}};
+      return {attack: null, health: null, special: {ability: "damage", value: 1}, cost:1};
       break;
   }
 }
