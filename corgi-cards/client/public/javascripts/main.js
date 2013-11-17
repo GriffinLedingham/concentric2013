@@ -122,6 +122,7 @@ window.Card = (function() {
     this.x = ko.observable(data.x);
     this.y = ko.observable(data.y);
     this.stats = new Stats(data.stats);
+    this.takingDamage = ko.observable(false);
   }
 
   Card.prototype.isMine = function(card, ui) {
@@ -258,7 +259,11 @@ Board = (function() {
           _this.cards(_.without(_this.cards(), target));
         } else {
           target.stats.health(combat.target.life);
+          target.takingDamage(true);
         }
+        window.setTimeout(function() {
+          return target.takingDamage(false);
+        }, 3000);
       } else if (data.type === 'spell') {
         console.log("spell was cast on yo MUTHAFUCKIN FACE");
       }

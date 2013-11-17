@@ -40,9 +40,9 @@ for(var i=0;i<20;i++)
   var name = "Draw";
 
   if(i % 2)
-    name = "Draw";
+    name = "DamageAll";
   else
-    name = "Heal";
+    name = "DamageAll";
 
   if(i % 5)
     name = "DamageAll";
@@ -271,9 +271,12 @@ io.sockets.on('connection', function (socket) {
       return;
     }
 
-    if(player_card.stats.attack !== null && opponent_card.stats.attack === null ) {
-      return;
+    if(typeof opponent_card.stats == 'undefined'){
+      if(player_card.stats.attack !== null && opponent_card !== "self" && opponent_card !== "opponent"){
+        return;
+      }
     }
+
 
     if(player_card.stats.attack !== null)
     {
@@ -337,71 +340,100 @@ function draw_card(player)
 //Card1 is attacker, Card2 is defender
 function attack(attacker,defender,socket)
 {
-  //TODO: Attack
-  console.log('attack');
-  var p1_atk = attacker.stats.attack;
-  var p1_life = attacker.stats.health;
-
-  var p2_atk = defender.stats.attack;
-  var p2_life = defender.stats.health;
-
-  p1_life = p1_life - p1_atk;
-  p2_life = p2_life - p2_atk;
-
-  var result_obj = {
-    action: {id: attacker.id, damage: p2_atk, life: p1_life},
-    target: {id: defender.id, damage: p1_atk, life: p2_life}
-  };
-
-  if(p1_life < 1)
+  var self;
+  var opponent;
+  if(room_players[socket.room][0].name === socket.name)
   {
-    //p1 dies
-    for(var i = 0;i<active_cards[socket.room].length;i++)
-    {
-      if(attacker.id === active_cards[socket.room][i].id)
-      {
-        active_cards[socket.room].splice(i,1);
-        break;
-      }
-    }
+    self = room_players[socket.room][0];
+    opponent = room_players[socket.room][1];
   }
   else
   {
-    for(var i = 0;i<active_cards[socket.room].length;i++)
-    {
-      if(attacker.id === active_cards[socket.room][i].id)
-      {
-        active_cards[socket.room][i].stats.health = p1_life;
-        break;
-      }
-    }
+    self = room_players[socket.room][1];
+    opponent = room_players[socket.room][0];
   }
 
-  if(p2_life < 1)
+  if(defender === 'opponent')
   {
-    //p2 dies
-    for(var i = 0;i<active_cards[socket.room].length;i++)
-    {
-      if(defender.id === active_cards[socket.room][i].id)
-      {
-        active_cards[socket.room].splice(i,1);
-        break;
-      }
-    }
+    var p1_atk = attacker.stats.attack;
+
+    opponent.life = opponent.life - p1_atk;
+  }
+  else if(defender === 'self')
+  {
+    var p1_atk = attacker.stats.attack;
+
+    self.life = self.life - p1_atk;
   }
   else
   {
-    for(var i = 0;i<active_cards[socket.room].length;i++)
+
+    //TODO: Attack
+    console.log('attack');
+    var p1_atk = attacker.stats.attack;
+    var p1_life = attacker.stats.health;
+
+    var p2_atk = defender.stats.attack;
+    var p2_life = defender.stats.health;
+
+    p1_life = p1_life - p1_atk;
+    p2_life = p2_life - p2_atk;
+
+    var result_obj = {
+      action: {id: attacker.id, damage: p2_atk, life: p1_life},
+      target: {id: defender.id, damage: p1_atk, life: p2_life}
+    };
+
+    if(p1_life < 1)
     {
-      if(defender.id === active_cards[socket.room][i].id)
+      //p1 dies
+      for(var i = 0;i<active_cards[socket.room].length;i++)
       {
-        active_cards[socket.room][i].stats.health = p2_life;
-        break;
+        if(attacker.id === active_cards[socket.room][i].id)
+        {
+          active_cards[socket.room].splice(i,1);
+          break;
+        }
       }
     }
-  }
+    else
+    {
+      for(var i = 0;i<active_cards[socket.room].length;i++)
+      {
+        if(attacker.id === active_cards[socket.room][i].id)
+        {
+          active_cards[socket.room][i].stats.health = p1_life;
+          break;
+        }
+      }
+    }
 
-  io.sockets.in(socket.room).emit('CardInteraction', {type:'attack', result: result_obj});
+    if(p2_life < 1)
+    {
+      //p2 dies
+      for(var i = 0;i<active_cards[socket.room].length;i++)
+      {
+        if(defender.id === active_cards[socket.room][i].id)
+        {
+          active_cards[socket.room].splice(i,1);
+          break;
+        }
+      }
+    }
+    else
+    {
+      for(var i = 0;i<active_cards[socket.room].length;i++)
+      {
+        if(defender.id === active_cards[socket.room][i].id)
+        {
+          active_cards[socket.room][i].stats.health = p2_life;
+          break;
+        }
+      }
+    }
+
+    io.sockets.in(socket.room).emit('CardInteraction', {type:'attack', result: result_obj});
+  }
 
   //TODO: Emit results for animation
 
@@ -440,18 +472,23 @@ function spell(spell,defender,socket)
       case 'damage':
         opponent.life = opponent.life - spell.stats.special.value;
         self.life = self.life - spell.stats.special.value;
+
+        var toRemove = [];
+
         for(var i = 0;i<active_cards[socket.room].length;i++)
         {
-          if(active_cards[socket.room][i].stats.attack)
+          if(active_cards[socket.room][i].stats.attack !== null)
           {
             var defender_life = active_cards[socket.room][i].stats.health;
             var spell_damage = spell.stats.special.value;
+
+            var damaged_card = active_cards[socket.room][i];
 
             defender_life = defender_life - spell_damage;
 
             if(defender_life < 1)
             {
-              active_cards[socket.room].splice(i,1);
+              toRemove.push(i);
             }
             else
             {
@@ -459,11 +496,18 @@ function spell(spell,defender,socket)
             }
             var result_obj = {
               action: null,
-              target: {id: active_cards[socket.room][i].id, damage: spell_damage, life: defender_life}
+              target: {id: damaged_card.id, damage: spell_damage, life: defender_life}
             };
             io.sockets.in(socket.room).emit('CardInteraction', {type:'attack', result: result_obj});
           }
         }
+
+        for(var i = 0; i < toRemove.length; i++){
+          active_cards[socket.room].splice(toRemove[i],1);
+        }
+
+
+
         //TODO: Return Results
         break;
       case 'heal':
@@ -513,11 +557,11 @@ function spell(spell,defender,socket)
         }
         break;
       case 'damage':
-        opponent.life = opponent.life - spell.stats.special.value;
+        self.life = self.life - spell.stats.special.value;
         //TODO: Return Results
         break;
       case 'heal':
-        opponent.life = opponent.life + spell.stats.special.value;
+        self.life = self.life + spell.stats.special.value;
         //TODO: Return Results
         break;
     }
@@ -573,6 +617,8 @@ function spell(spell,defender,socket)
         var defender_life = defender.stats.health;
         var spell_damage = spell.stats.special.value;
 
+        var damaged_card = active_cards[socket.room][defender_index];
+
         defender_life = defender_life - spell_damage;
 
         if(defender_life < 1)
@@ -585,7 +631,7 @@ function spell(spell,defender,socket)
         }
         var result_obj = {
           action: null,
-          target: {id: active_cards[socket.room][defender_index].id, damage: spell_damage, life: defender_life}
+          target: {id: damaged_card.id, damage: spell_damage, life: defender_life}
         };
         io.sockets.in(socket.room).emit('CardInteraction', {type:'attack', result: result_obj});
         break;
