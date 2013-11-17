@@ -12,6 +12,7 @@ class Board
   constructor: (@delegate) ->
     {
       @socket
+      @activeTurn
     } = @delegate
 
     @action = ko.observable null
@@ -91,7 +92,7 @@ class Board
     @cards.splice(0)
 
   dropCard: (data, ui) =>
-
+    return unless @activeTurn()
     card = ko.dataFor ui.helper.get(0)
 
     @socket.emit 'CardPlayed', card.id
@@ -163,11 +164,22 @@ class AppViewModel
 
     @activeTurn = ko.observable false
 
+
     @socket = io.connect(window.location.origin)
 
     @host = window.location.origin
 
     @board = new Board @
+
+    @activeTurn.subscribe (val) =>
+      if val
+        _.each @board.cards(), (card) =>
+          if card.uname is @username()
+            $("##{card.id}").draggable("enable");
+      else
+        _.each @board.cards(), (card) =>
+          if card.uname is @username()
+            $("##{card.id}").draggable("option", "disabled", true)
 
     @self = new Player @, "self"
     @opponent = new Player @, "opponent"
@@ -203,7 +215,7 @@ class AppViewModel
 
 
     @socket.on "AddStrength", (data) =>
-      console.log data
+
       me = data.uname is @username()
 
       if me
