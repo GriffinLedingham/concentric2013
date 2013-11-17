@@ -11,6 +11,7 @@ guid = =>
 class Board
   constructor: (@delegate) ->
     {
+      @actions
       @socket
       @activeTurn
     } = @delegate
@@ -34,6 +35,13 @@ class Board
 
     @socket.on 'CardPlayed', (data) =>
 
+      if data.uname is app.username()
+        @actions.push
+          message: "You played #{data.name}"
+      else
+        @actions.push
+          message: "Your opponent played #{data.name}"
+
       @cards.push new Card @, data
 
       $cardvm = $("##{data.id}")
@@ -50,7 +58,7 @@ class Board
         $cardvm.css "left", (card.x - 200) + 'px'
 
     @socket.on "SpellCast", (cardId) =>
-      console.log cardId
+
       if (card = (_.find @cards(), (card) => card.id is cardId))
         @cards _.without @cards(), card
 
@@ -72,18 +80,23 @@ class Board
         if action?
           if combat.action.life is 0
             @cards _.without @cards(), action
+            @actions.push new Action
+                message: "#{action.name} is in a better place"
           else
             action.stats.health combat.action.life
+            @actions.push new Action
+                message: "#{action.name} has taken #{combat.action.damage} damage"
 
         if combat.target.life is 0
           @cards _.without @cards(), target
+          @actions.push new Action
+              message: "#{target.name} is in a better place"
         else
           target.stats.health combat.target.life
           target.takingDamage null
           target.takingDamage (if combat.target.damage < 0 then "+" + combat.target.damage*-1 else "-" + combat.target.damage)
-
-      else if data.type is 'spell'
-        console.log "spell was cast on yo MUTHAFUCKIN FACE"
+          @actions.push new Action
+              message: "#{action.name} has taken #{combat.target.damage} damage"
 
       @action null
       @target null
@@ -157,6 +170,22 @@ class Board
 
       @socket.emit "CardInteraction", action, target
 
+class Action
+  constructor: (data) ->
+    currentdate = new Date();
+    datetime = currentdate.getDate() + "/" +
+      (currentdate.getMonth()+1)  + "/" +
+      currentdate.getFullYear() + " @ " +
+      currentdate.getHours() + ":" +
+      currentdate.getMinutes() + ":" +
+      currentdate.getSeconds()
+
+    @time = ko.observable datetime
+    @target = ko.observable null
+
+
+    @message = ko.observable data.message or "---"
+
 class AppViewModel
   constructor: () ->
 
@@ -169,6 +198,8 @@ class AppViewModel
     @socket = io.connect(window.location.origin)
 
     @host = window.location.origin
+
+    @actions = ko.observableArray []
 
     @board = new Board @
 
@@ -201,8 +232,24 @@ class AppViewModel
       @self.life selfLife
       @opponent.life opponentLife
 
+      if selfDiff isnt 0
+        if selfDiff > 0
+          @actions.push
+            message: "You gained #{selfDiff} life"
+          @actions.push
+            message: "You lost #{selfDiff*-1} life"
+
+      if opponentDiff isnt 0
+        if opponentDiff > 0
+          @actions.push
+            message: "Your opponent gained #{opponentDiff} life"
+          @actions.push
+            message: "Your opponent lost #{opponentDiff*-1} life"
+
     @socket.on "StartTurn", (name) =>
-      console.log 'starting ' + name
+      @actions.push
+        message: "Starting turn: #{name}"
+
       if name isnt @username() then @activeTurn false
       else @activeTurn true
 
@@ -213,11 +260,7 @@ class AppViewModel
         @self.intelLeft @self.intel()
 
 
-
-
-
     @socket.on "AddStrength", (data) =>
-
       me = data.uname is @username()
 
       if me
@@ -229,7 +272,6 @@ class AppViewModel
         @opponent.strength data.cumulative
 
     @socket.on "AddIntel", (data) =>
-
       me = data.uname is @username()
 
       if me
@@ -254,14 +296,16 @@ class AppViewModel
   login: (player, ev) =>
     if ev.keyCode is 13
       @socket.emit 'auth', app.username()
-
+      @actions.push
+        message: "You set your username to #{app.username()}"
     true
 
   join: (player, ev) =>
     if ev.keyCode is 13
       app.restart()
       @socket.emit 'join_room', @room()
-
+      @actions.push
+        message: "You joined room #{@room()}"
     true
 
 

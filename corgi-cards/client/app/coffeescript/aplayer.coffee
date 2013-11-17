@@ -1,6 +1,7 @@
 class window.Player
   constructor: (@delegate) ->
     {
+      @actions
       @board
       @socket
     } = @delegate
@@ -34,6 +35,16 @@ class window.Player
 
 
     @socket.on "CardDraw", (data) =>
+
+      card = _.find @actions(), (action) =>
+        action.target is data.id and action.message is 'You drew a card'
+
+      return if card
+
+      @actions.push
+        message: "You drew a card"
+        target: data.id
+
       data.x = Math.random()*1300
       data.y = 700
       card = new Card @, data
@@ -53,7 +64,6 @@ class window.Player
         @opponentHand _.without @opponentHand(), card
 
     @socket.on "SyncHand", (data) =>
-      console.log data
       _.each data, (card) =>
         @hand.push new Card(@, card)
 
@@ -64,6 +74,16 @@ class window.Player
 
 
     @socket.on "OpponentDraw", (data) =>
+
+      card = _.find @actions(), (action) =>
+        action.target is data and action.message is 'Your opponent drew a card'
+
+      return if card
+
+      @actions.push
+        message: "Your opponent drew a card"
+        target: data
+
       @opponentHand.push {id: data, x: -100, y: -100}
 
     @socket.on "HandMoved", (data) =>
@@ -85,8 +105,6 @@ class window.Player
 
         $cardvm.css "top", card.y + 'px'
         $cardvm.css "left", card.x + 'px'
-
-    @socket.on "PlayerLifeChange", (data) =>
 
 
   addStrength: () =>

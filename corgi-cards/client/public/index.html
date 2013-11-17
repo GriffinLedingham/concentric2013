@@ -96,6 +96,11 @@
       event: { keypress: join }">
   </article>
 
+  <section id="log">
+    <ul class="feed" data-bind='foreach: actions'>
+      <li data-bind="text: message"></li>
+    </ul>
+  </section>
 
   <script src="javascripts/socket.io.js"></script>
   <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
