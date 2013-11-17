@@ -121,7 +121,6 @@ window.Card = (function() {
     this.x = ko.observable(data.x);
     this.y = ko.observable(data.y);
     this.stats = new Stats(data.stats);
-    console.log(this.stats);
   }
 
   Card.prototype.isMine = function(card, ui) {
@@ -134,9 +133,9 @@ window.Card = (function() {
 
 window.Stats = (function() {
   function Stats(stats) {
-    console.log(stats);
     this.attack = ko.observable(stats.attack != null ? stats.attack : -1);
     this.health = ko.observable(stats.health != null ? stats.health : -1);
+    this.baseHealth = ko.observable(stats.health != null ? stats.health : -1);
   }
 
   return Stats;
@@ -224,6 +223,28 @@ Board = (function() {
       });
     });
     this.socket.on("CardInteraction", function(data) {
+      var action, combat, target;
+      if (data.type === 'attack') {
+        combat = data.result;
+        action = _.find(_this.cards(), function(card) {
+          return card.id === combat.action.id;
+        });
+        target = _.find(_this.cards(), function(card) {
+          return card.id === combat.target.id;
+        });
+        if (combat.action.life === 0) {
+          _this.cards(_.without(_this.cards(), action));
+        } else {
+          action.stats.health(combat.action.life);
+        }
+        if (combat.target.life === 0) {
+          _this.cards(_.without(_this.cards(), target));
+        } else {
+          target.stats.health(combat.target.life);
+        }
+      } else if (data.type === 'spell') {
+        console.log("spell was cast on yo MUTHAFUCKIN FACE");
+      }
       _this.action(null);
       return _this.target(null);
     });
