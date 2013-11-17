@@ -294,8 +294,8 @@ function attack(attacker,defender,socket)
   p2_life = p2_life - p2_atk;
 
   var result_obj = {
-    action: {damage: p2_atk, life: p1_life},
-    target: {damage: p1_atk, life: p2_life}
+    action: {id: attacker.id, damage: p2_atk, life: p1_life},
+    target: {id: defender.id, damage: p1_atk, life: p2_life}
   };
 
   if(p1_life < 1)
@@ -305,7 +305,7 @@ function attack(attacker,defender,socket)
     {
       if(attacker.id === active_cards[socket.room][i].id)
       {
-        active_cards[room].splice(i,1);
+        active_cards[socket.room].splice(i,1);
         break;
       }
     }
@@ -316,7 +316,7 @@ function attack(attacker,defender,socket)
     {
       if(attacker.id === active_cards[socket.room][i].id)
       {
-        active_cards[room][i].stats.health = p1_life;
+        active_cards[socket.room][i].stats.health = p1_life;
         break;
       }
     }
@@ -329,7 +329,7 @@ function attack(attacker,defender,socket)
     {
       if(defender.id === active_cards[socket.room][i].id)
       {
-        active_cards[room].splice(i,1);
+        active_cards[socket.room].splice(i,1);
         break;
       }
     }
@@ -340,7 +340,7 @@ function attack(attacker,defender,socket)
     {
       if(defender.id === active_cards[socket.room][i].id)
       {
-        active_cards[room][i].stats.health = p2_life;
+        active_cards[socket.room][i].stats.health = p2_life;
         break;
       }
     }
@@ -388,16 +388,16 @@ function getStats(name)
   switch(name)
   {
     case 'RDW1':
-      return {attack:1,health:1,special:null};
+      return {attack:1,health:5,special:null};
       break;
     case 'RDW2':
-      return {attack:1,health:1,special:null};
+      return {attack:1,health:5,special:null};
       break;
     case 'RDW3':
-      return {attack:1,health:1,special:null};
+      return {attack:1,health:5,special:null};
       break;
     case 'RDW4':
-      return {attack:1,health:1,special:null};
+      return {attack:1,health:5,special:null};
       break;
     case 'RDW5':
       return {attack:1,health:2,special:null};
@@ -406,28 +406,28 @@ function getStats(name)
       return {attack:1,health:2,special:null};
       break;
     case 'RDW7':
-      return {attack:1,health:1,special:null};
+      return {attack:1,health:5,special:null};
       break;
     case 'RDW8':
-      return {attack:1,health:1,special:null};
+      return {attack:1,health:5,special:null};
       break;
     case 'RDW9':
-      return {attack:1,health:1,special:null};
+      return {attack:1,health:5,special:null};
       break;
     case 'RDW10':
-      return {attack:1,health:1,special:null};
+      return {attack:1,health:5,special:null};
       break;
     case 'RDW11':
-      return {attack:1,health:1,special:null};
+      return {attack:1,health:5,special:null};
       break;
     case 'RDW12':
-      return {attack:1,health:1,special:null};
+      return {attack:1,health:5,special:null};
       break;
     case 'RDW13':
-      return {attack:1,health:1,special:null};
+      return {attack:1,health:5,special:null};
       break;
     case 'RDW14':
-      return {attack:1,health:1,special:null};
+      return {attack:1,health:5,special:null};
       break;
     case 'RDW15':
       return {attack:1,health:2,special:null};
@@ -436,16 +436,16 @@ function getStats(name)
       return {attack:1,health:2,special:null};
       break;
     case 'RDW17':
-      return {attack:1,health:1,special:null};
+      return {attack:1,health:5,special:null};
       break;
     case 'RDW18':
-      return {attack:1,health:1,special:null};
+      return {attack:1,health:5,special:null};
       break;
     case 'RDW19':
-      return {attack:1,health:1,special:null};
+      return {attack:1,health:5,special:null};
       break;
     case 'RDW20':
-      return {attack:1,health:1,special:null};
+      return {attack:1,health:5,special:null};
       break;
     case 'Control1':
       return {attack:1,health:1,special:null};

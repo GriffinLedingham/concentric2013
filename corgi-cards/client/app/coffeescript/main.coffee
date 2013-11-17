@@ -54,8 +54,21 @@ class Board
 
         combat = data.result
 
-        if combat.action.life is 0 then @cards _.without @cards(), (card) => card.id is @action().id
-        if combat.target.life is 0 then @cards _.without @cards(), (card) => card.id is @target().id
+        action = _.find @cards(), (card) =>
+          card.id is combat.action.id
+
+        target = _.find @cards(), (card) =>
+            card.id is combat.target.id
+
+        if combat.action.life is 0
+          @cards _.without @cards(), action
+        else
+          action.stats.health combat.action.life
+
+        if combat.target.life is 0
+          @cards _.without @cards(), target
+        else
+          target.stats.health combat.target.life
 
       else if data.type is 'spell'
         console.log "spell was cast on yo MUTHAFUCKIN FACE"
