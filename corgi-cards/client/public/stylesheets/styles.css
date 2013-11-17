@@ -10,6 +10,11 @@ body {
   padding: 0;
   margin: 0; }
 
+.yougotfucked {
+  -webkit-animation-duration: 10s !important;
+  font-size: 30px;
+  color: red; }
+
 .card {
   position: absolute;
   width: 80px;
