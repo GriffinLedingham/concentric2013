@@ -43,8 +43,14 @@
   with: self">
     <div class="lifeTotal" data-bind="text: 'You: ' + life()"></div>
     <!-- ko if: diff -->
-    <div class="yougotfucked animated fadeOutUpBig" data-bind="text: diff"></div>
+      <div class="yougotfucked animated fadeOutUpBig" data-bind="text: diff"></div>
     <!-- /ko -->
+
+    <aside class="resources">
+      <div class="count" data-bind="text: 'Resources: ' + resourceCount()"></div>
+      <div class="addResource" data-bind="click: addResource, disable: haveUsedResource">+</div>
+    </aside>
+
   </aside>
 
 
@@ -54,11 +60,16 @@
     with: opponent">
     <div class="lifeTotal" data-bind="text: 'Opponent: ' + life()"></div>
     <!-- ko if: diff -->
-    <div class="yougotfucked animated fadeOutUpBig" data-bind="text: diff"></div>
+      <div class="yougotfucked animated fadeOutUpBig" data-bind="text: diff"></div>
     <!-- /ko -->
+
+    <aside class="resources">
+      <div class="count" data-bind="text: 'Resources: ' + resourceCount()"></div>
+    </aside>
+
   </aside>
 
-
+  <div class="endTurn" data-bind="click: endTurn, visible: activeTurn">End Turn</div>
 
 
 

@@ -20,6 +20,7 @@ class window.Card
 
     @takingDamage = ko.observable false
 
+    @tapped = ko.observable false
 
   isMine: (card, ui) =>
     app.username() is @uname
