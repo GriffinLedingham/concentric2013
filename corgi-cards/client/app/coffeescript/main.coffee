@@ -78,6 +78,7 @@ class Board
           @cards _.without @cards(), target
         else
           target.stats.health combat.target.life
+          target.takingDamage true
 
       else if data.type is 'spell'
         console.log "spell was cast on yo MUTHAFUCKIN FACE"

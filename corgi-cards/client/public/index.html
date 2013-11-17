@@ -16,7 +16,13 @@
           attr: {id: id},
           css: {monster: type() == 'monster', spell: type() == 'spell', action: $parent.action() == $data, target: $parent.target() == $data},
           click: $parent.handleCardClick
-          "></div>
+          ">
+
+            <!-- ko if: takingDamage -->
+              <div class="animated fadeOutUpBig"></div>
+            <!-- /ko -->
+
+          </div>
     <!-- /ko -->
   </article>
 

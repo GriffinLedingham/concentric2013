@@ -18,6 +18,7 @@ class window.Card
 
     @stats = new Stats data.stats
 
+    @takingDamage false
 
 
   isMine: (card, ui) =>
