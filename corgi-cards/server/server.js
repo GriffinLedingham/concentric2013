@@ -39,7 +39,8 @@ for(var i =0;i<20;i++)
               name: name,
               id: guid(),
               type:'monster',
-              stats:stats_obj
+              stats:stats_obj,
+              exhaust:false
           });
 }
 
@@ -60,7 +61,8 @@ for(var i=0;i<20;i++)
               name: name,
               id:guid(),
               type:'spell',
-              stats:stats_obj
+              stats:stats_obj,
+              exhaust:false
           });
 }
 
@@ -283,6 +285,10 @@ io.sockets.on('connection', function (socket) {
         if(action_id === active_cards[socket.room][i].id)
         {
           player_card = active_cards[socket.room][i];
+          if(player_card.exhaust)
+          {
+            return;
+          }
         }
       }
 
@@ -296,6 +302,10 @@ io.sockets.on('connection', function (socket) {
         if(action_id === active_cards[socket.room][i].id)
         {
           player_card = active_cards[socket.room][i];
+          if(player_card.exhaust)
+          {
+            return;
+          }
           continue;
         }
         else if(target_id === active_cards[socket.room][i].id)
@@ -325,6 +335,15 @@ io.sockets.on('connection', function (socket) {
     if(player_card.stats.attack !== null)
     {
       attack(player_card,opponent_card,socket);
+      for(var j = 0;j<active_cards[socket.room].length;j++)
+      {
+        if(active_cards[socket.room][j].id === player_card.id)
+        {
+          active_cards[socket.room][j].exhaust = true;
+          break;
+        }
+      }
+
     }
     else
     {
@@ -430,6 +449,20 @@ function start_turn(player)
   player.turn_resource = false;
   player.strength = player.c_strength;
   player.intel = player.c_intel;
+  if(typeof active_cards[player.room] === 'undefined')
+  {
+    active_cards[player.room] = [];
+  }
+
+  console.log(active_cards, player.room, "!!!!");
+
+  for(var j = 0;j<active_cards[player.room].length;j++)
+  {
+    if(active_cards[player.room][j].uname === player.uname)
+    {
+      active_cards[player.room][j].exhaust = false;
+    }
+  }
   draw_card(player);
   io.sockets.in(player.room).emit('StartTurn',player.uname);
   io.sockets.emit('AddStrength',{uname:player.uname, value: player.strength, cumulative: player.c_strength});
