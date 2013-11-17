@@ -16,6 +16,17 @@ class window.Player
 
     @opponentHand = ko.observableArray []
 
+    @resources = ko.observable 0
+    @resourceLeft = ko.observable 0
+
+    @resourceCount = ko.computed =>
+      @resourceLeft() + '/' + @resources()
+
+    @haveUsedResource = ko.observable false
+
+    @myTurn = ko.observable false
+
+
     @socket.on "CardDraw", (data) =>
       data.x = Math.random()*1300
       data.y = 700
@@ -71,6 +82,12 @@ class window.Player
 
     @socket.on "PlayerLifeChange", (data) =>
 
+
+  addResource: () =>
+    @resources @resources()+1
+    @resourceLeft @resourceLeft()+1
+
+    false
 
   dragstop: (card, ui) =>
 

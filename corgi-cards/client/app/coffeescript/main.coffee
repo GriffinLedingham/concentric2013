@@ -161,6 +161,8 @@ class AppViewModel
     @username = ko.observable null
     @room = ko.observable null
 
+    @activeTurn = ko.observable false
+
     @socket = io.connect(window.location.origin)
 
     @host = window.location.origin
@@ -186,7 +188,17 @@ class AppViewModel
       @self.life selfLife
       @opponent.life opponentLife
 
+    @socket.on "StartTurn", (name) =>
 
+      if name isnt @username() then @activeTurn false
+      else @uiOnLockdown true
+
+
+
+
+
+  endTurn: () =>
+    @socket.emit "EndTurn"
 
   restart: () =>
     @board.clear()
