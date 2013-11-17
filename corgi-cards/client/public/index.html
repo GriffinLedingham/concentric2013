@@ -3,6 +3,7 @@
 <head>
   <title>CORGI CARDS: WITH A VENGEANCE</title>
   <link rel="stylesheet" href="stylesheets/styles.css" type="text/css" media="screen" charset="utf-8">
+  <link rel="stylesheet" href="stylesheets/animate.css" type="text/css" media="screen" charset="utf-8">
 
 </head>
 
@@ -31,7 +32,9 @@
   <!-- /ko -->
 
   <aside id="self" class="player" data-bind="click: board.handleSelfClick, css: {active: board.target() == 'self'}">
-
+    <div class="eye left"></div>
+    <div class="eye right"></div>
+    <div class="mouth"></div>
   </aside>
 
   <aside id="opponent" class="player" data-bind="click: board.handleOpponentClick, css: {active: board.target() == 'opponent'}">

@@ -117,10 +117,15 @@ class Board
     @target null
 
   handleSelfClick: =>
-    @target "self"
+    if @target() isnt "self"
+      @target "self"
+    else @target null
 
   handleOpponentClick: =>
-    @target "opponent"
+    if @target() isnt "opponent"
+      @target "opponent"
+    else @target null
+
 
 class AppViewModel
   constructor: () ->

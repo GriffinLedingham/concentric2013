@@ -68,6 +68,8 @@ class window.Player
         $cardvm.css "top", card.y + 'px'
         $cardvm.css "left", card.x + 'px'
 
+    @socket.on "PlayerLifeChange", (data) =>
+
 
   dragstop: (card, ui) =>
 
