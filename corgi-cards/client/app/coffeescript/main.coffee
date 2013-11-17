@@ -14,6 +14,9 @@ class Board
       @socket
     } = @delegate
 
+    @action = ko.observable null
+    @target = ko.observable null
+
     @cards = ko.observableArray []
 
     @socket.on 'CardMoved', (data) =>
@@ -45,6 +48,10 @@ class Board
         $cardvm.css "top", card.y + 'px'
         $cardvm.css "left", card.x + 'px'
 
+    @socket.on "CardInteraction", (data) =>
+      @action null
+      @target null
+
   clear: () =>
     @cards.splice(0)
 
@@ -63,6 +70,27 @@ class Board
 
     @socket.emit 'CardMoved', {id: card.id, name: card.name, x: ui.position.left, y: ui.position.top}
 
+  handleCardClick: (card, ui) =>
+
+    if card.isMine(card)
+      if @action() is card
+        @action null
+      else @action card
+
+    else
+      if @target() is card
+        @target null
+      else @target card
+
+    if @action() and @target()
+      @socket.emit "CardInteraction", @action().id, @target().id
+
+    false
+
+  handleBoardClick: (board, ui) =>
+    console.log "here"
+    @action null
+    @target null
 
 class AppViewModel
   constructor: () ->
