@@ -75,6 +75,15 @@ window.Player = (function() {
       $cardvm.css("top", data.y + 'px');
       return $cardvm.css("left", data.x + 'px');
     });
+    this.socket.on("SyncOpponentHand", function(data) {
+      return _.each(data, function(card) {
+        var $cardvm;
+        _this.opponentHand.push(card);
+        $cardvm = $("#" + card.id);
+        $cardvm.css("top", card.y + 'px');
+        return $cardvm.css("left", card.x + 'px');
+      });
+    });
   }
 
   Player.prototype.dragstop = function(card, ui) {
@@ -111,6 +120,8 @@ window.Card = (function() {
     this.img = data.img;
     this.x = ko.observable(data.x);
     this.y = ko.observable(data.y);
+    this.stats = new Stats(data.stats);
+    console.log(this.stats);
   }
 
   Card.prototype.isMine = function(card, ui) {
@@ -118,6 +129,27 @@ window.Card = (function() {
   };
 
   return Card;
+
+})();
+
+window.Stats = (function() {
+  function Stats(stats) {
+    console.log(stats);
+    this.attack = ko.observable(stats.attack != null ? stats.attack : -1);
+    this.health = ko.observable(stats.health != null ? stats.health : -1);
+  }
+
+  return Stats;
+
+})();
+
+window.Ability = (function() {
+  function Ability(type, value) {
+    this.type = type;
+    this.value = value;
+  }
+
+  return Ability;
 
 })();
 
@@ -154,10 +186,14 @@ Board = (function() {
   function Board(delegate) {
     var _this = this;
     this.delegate = delegate;
+    this.handleBoardClick = __bind(this.handleBoardClick, this);
+    this.handleCardClick = __bind(this.handleCardClick, this);
     this.dragstop = __bind(this.dragstop, this);
     this.dropCard = __bind(this.dropCard, this);
     this.clear = __bind(this.clear, this);
     this.socket = this.delegate.socket;
+    this.action = ko.observable(null);
+    this.target = ko.observable(null);
     this.cards = ko.observableArray([]);
     this.socket.on('CardMoved', function(data) {
       var $cardvm, card;
@@ -173,14 +209,7 @@ Board = (function() {
     });
     this.socket.on('CardPlayed', function(data) {
       var $cardvm;
-      _this.cards.push(new Card(_this, {
-        id: data.id,
-        name: data.name,
-        uname: data.uname,
-        type: data.type,
-        x: data.x,
-        y: data.y
-      }));
+      _this.cards.push(new Card(_this, data));
       $cardvm = $("#" + data.id);
       $cardvm.css("top", data.y + 'px');
       return $cardvm.css("left", data.x + 'px');
@@ -188,18 +217,15 @@ Board = (function() {
     this.socket.on("sync_active", function(data) {
       return _.each(data, function(card) {
         var $cardvm;
-        _this.cards.push(new Card(_this, {
-          id: card.id,
-          name: card.name,
-          uname: card.uname,
-          type: card.type,
-          x: card.x,
-          y: card.y
-        }));
+        _this.cards.push(new Card(_this, data));
         $cardvm = $("#" + card.id);
         $cardvm.css("top", card.y + 'px');
         return $cardvm.css("left", card.x + 'px');
       });
+    });
+    this.socket.on("CardInteraction", function(data) {
+      _this.action(null);
+      return _this.target(null);
     });
   }
 
@@ -210,14 +236,7 @@ Board = (function() {
   Board.prototype.dropCard = function(data, ui) {
     var card;
     card = ko.dataFor(ui.helper.get(0));
-    return this.socket.emit('CardPlayed', {
-      id: card.id,
-      name: card.name,
-      uname: card.uname,
-      type: card.type(),
-      x: card.x(),
-      y: card.y()
-    });
+    return this.socket.emit('CardPlayed', card.id);
   };
 
   Board.prototype.dragstop = function(ev, ui) {
@@ -231,6 +250,32 @@ Board = (function() {
       x: ui.position.left,
       y: ui.position.top
     });
+  };
+
+  Board.prototype.handleCardClick = function(card, ui) {
+    if (card.isMine(card)) {
+      if (this.action() === card) {
+        this.action(null);
+      } else {
+        this.action(card);
+      }
+    } else {
+      if (this.target() === card) {
+        this.target(null);
+      } else {
+        this.target(card);
+      }
+    }
+    if (this.action() && this.target()) {
+      this.socket.emit("CardInteraction", this.action().id, this.target().id);
+    }
+    return false;
+  };
+
+  Board.prototype.handleBoardClick = function(board, ui) {
+    console.log("here");
+    this.action(null);
+    return this.target(null);
   };
 
   return Board;
@@ -254,6 +299,7 @@ AppViewModel = (function() {
     this.board.clear();
     this.player.hand.splice(0);
     this.player.deck.splice(0);
+    this.player.opponentHand.splice(0);
     return this.player.discard.splice(0);
   };
 

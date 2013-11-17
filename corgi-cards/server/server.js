@@ -284,6 +284,73 @@ function attack(attacker,defender,socket)
 {
   //TODO: Attack
   console.log('attack');
+  var p1_atk = attacker.stats.attack;
+  var p1_life = attacker.stats.health;
+
+  var p2_atk = defender.stats.attack;
+  var p2_life = defender.stats.health;
+
+  p1_life = p1_life - p1_atk;
+  p2_life = p2_life - p2_atk;
+
+  var result_obj = {
+    action: {damage: p2_atk, life: p1_life},
+    target: {damage: p1_atk, life: p2_life}
+  };
+
+  if(p1_life < 1)
+  {
+    //p1 dies
+    for(var i = 0;i<active_cards[socket.room].length;i++)
+    {
+      if(attacker.id === active_cards[socket.room][i].id)
+      {
+        active_cards[room].splice(i,1);
+        break;
+      }
+    }
+  }
+  else
+  {
+    for(var i = 0;i<active_cards[socket.room].length;i++)
+    {
+      if(attacker.id === active_cards[socket.room][i].id)
+      {
+        active_cards[room][i].stats.health = p1_life;
+        break;
+      }
+    }
+  }
+
+  if(p2_life < 1)
+  {
+    //p2 dies
+    for(var i = 0;i<active_cards[socket.room].length;i++)
+    {
+      if(defender.id === active_cards[socket.room][i].id)
+      {
+        active_cards[room].splice(i,1);
+        break;
+      }
+    }
+  }
+  else
+  {
+    for(var i = 0;i<active_cards[socket.room].length;i++)
+    {
+      if(defender.id === active_cards[socket.room][i].id)
+      {
+        active_cards[room][i].stats.health = p2_life;
+        break;
+      }
+    }
+  }
+
+  io.sockets.in(socket.room).emit('CardInteraction', {type:'attack', result: result_obj});
+
+  //TODO: Emit results for animation
+
+  //Emit updated battlefield
 }
 
 function spell(spell,defender,socket)
