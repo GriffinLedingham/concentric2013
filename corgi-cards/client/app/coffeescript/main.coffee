@@ -189,9 +189,9 @@ class AppViewModel
       @opponent.life opponentLife
 
     @socket.on "StartTurn", (name) =>
-
+      console.log 'starting ' + name 
       if name isnt @username() then @activeTurn false
-      else @uiOnLockdown true
+      else @activeTurn true
 
 
 

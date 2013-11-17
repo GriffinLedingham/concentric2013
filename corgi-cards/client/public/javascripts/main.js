@@ -10,11 +10,21 @@ window.Player = (function() {
     this.delegate = delegate;
     this.isMine = __bind(this.isMine, this);
     this.dragstop = __bind(this.dragstop, this);
+    this.addResource = __bind(this.addResource, this);
     _ref = this.delegate, this.board = _ref.board, this.socket = _ref.socket;
+    this.life = ko.observable(30);
+    this.diff = ko.observable(false);
     this.hand = ko.observableArray([]);
     this.deck = ko.observableArray([]);
     this.discard = ko.observableArray([]);
     this.opponentHand = ko.observableArray([]);
+    this.resources = ko.observable(0);
+    this.resourceLeft = ko.observable(0);
+    this.resourceCount = ko.computed(function() {
+      return _this.resourceLeft() + '/' + _this.resources();
+    });
+    this.haveUsedResource = ko.observable(false);
+    this.myTurn = ko.observable(false);
     this.socket.on("CardDraw", function(data) {
       var $cardvm, card;
       data.x = Math.random() * 1300;
@@ -87,6 +97,12 @@ window.Player = (function() {
     this.socket.on("PlayerLifeChange", function(data) {});
   }
 
+  Player.prototype.addResource = function() {
+    this.resources(this.resources() + 1);
+    this.resourceLeft(this.resourceLeft() + 1);
+    return false;
+  };
+
   Player.prototype.dragstop = function(card, ui) {
     card = ko.dataFor(ui.helper.get(0));
     if (!card) {
@@ -123,6 +139,7 @@ window.Card = (function() {
     this.y = ko.observable(data.y);
     this.stats = new Stats(data.stats);
     this.takingDamage = ko.observable(false);
+    this.tapped = ko.observable(false);
   }
 
   Card.prototype.isMine = function(card, ui) {
@@ -259,11 +276,9 @@ Board = (function() {
           _this.cards(_.without(_this.cards(), target));
         } else {
           target.stats.health(combat.target.life);
-          target.takingDamage(true);
+          target.takingDamage(null);
+          target.takingDamage((combat.target.damage < 0 ? "+" + combat.target.damage * -1 : "-" + combat.target.damage));
         }
-        window.setTimeout(function() {
-          return target.takingDamage(false);
-        }, 3000);
       } else if (data.type === 'spell') {
         console.log("spell was cast on yo MUTHAFUCKIN FACE");
       }
@@ -361,20 +376,49 @@ AppViewModel = (function() {
     this.join = __bind(this.join, this);
     this.login = __bind(this.login, this);
     this.restart = __bind(this.restart, this);
+    this.endTurn = __bind(this.endTurn, this);
+    var _this = this;
     this.username = ko.observable(null);
     this.room = ko.observable(null);
+    this.activeTurn = ko.observable(false);
     this.socket = io.connect(window.location.origin);
     this.host = window.location.origin;
     this.board = new Board(this);
-    this.player = new Player(this);
+    this.self = new Player(this, "self");
+    this.opponent = new Player(this, "opponent");
+    this.socket.on("PlayerLife", function(data) {
+      var opponentDiff, opponentLife, selfDiff, selfLife;
+      selfLife = data.self;
+      opponentLife = data.opponent;
+      selfDiff = selfLife - _this.self.life();
+      opponentDiff = opponentLife - _this.opponent.life();
+      _this.self.diff(null);
+      _this.opponent.diff(null);
+      _this.self.diff(selfDiff);
+      _this.opponent.diff(opponentDiff);
+      _this.self.life(selfLife);
+      return _this.opponent.life(opponentLife);
+    });
+    this.socket.on("StartTurn", function(name) {
+      console.log('starting ' + name);
+      if (name !== _this.username()) {
+        return _this.activeTurn(false);
+      } else {
+        return _this.activeTurn(true);
+      }
+    });
   }
+
+  AppViewModel.prototype.endTurn = function() {
+    return this.socket.emit("EndTurn");
+  };
 
   AppViewModel.prototype.restart = function() {
     this.board.clear();
-    this.player.hand.splice(0);
-    this.player.deck.splice(0);
-    this.player.opponentHand.splice(0);
-    return this.player.discard.splice(0);
+    this.self.hand.splice(0);
+    this.self.deck.splice(0);
+    this.self.opponentHand.splice(0);
+    return this.self.discard.splice(0);
   };
 
   AppViewModel.prototype.login = function(player, ev) {

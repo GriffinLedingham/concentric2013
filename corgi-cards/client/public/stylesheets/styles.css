@@ -85,3 +85,20 @@ body {
 .lifeTotal {
   position: relative;
   top: 120px; }
+
+.endTurn {
+  width: 100px;
+  height: 50px;
+  text-align: center;
+  line-height: 50px;
+  border: solid 1px black;
+  position: absolute;
+  right: 20px;
+  top: 20px; }
+  .endTurn:hover {
+    background-color: #dddddd;
+    cursor: pointer; }
+
+.resources {
+  position: relative;
+  top: 150px; }

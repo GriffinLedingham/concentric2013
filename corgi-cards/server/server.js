@@ -73,11 +73,8 @@ io.sockets.on('connection', function (socket) {
   socket.discard;
   socket.turn_resources = false;
 
-  //Current, this turn
-  socket.resources = 0;
-
-  //Total resources over game-span
-  socket.c_resource = 0;
+  socket.strength = 0;
+  socket.intel = 0;
   
   socket.life = 30;
 
@@ -324,9 +321,27 @@ io.sockets.on('connection', function (socket) {
     else
     {
       //set turn to [socket.room][0]
-      room_turn[socket.room] = room_players[socket.room][1];
+      room_turn[socket.room] = room_players[socket.room][0];
     }
     start_turn(room_turn[socket.room]);
+  });
+
+  socket.on('AddStrength',function(){
+    if(socket.turn_resource === false && room_turn[socket.room].uname === socket.uname)
+    {
+      socket.strength++;
+      socket.c_strength++;
+      socket.turn_resource = true;
+    }
+  });
+
+  socket.on('AddIntel',function(){
+    if(socket.turn_resource === false && room_turn[socket.room].uname === socket.uname)
+    {
+      socket.intel++;
+      socket.c_intel++;
+      socket.turn_resource = true;
+    }
   });
 });
 
@@ -357,12 +372,10 @@ function start_game(player1, player2)
   }
 
   //Roll dice
-  var die = Math.floor((Math.random()*6)+1);
+  var die = Math.floor((Math.random()*5)+1);
 
   // % 2 => player1 turn
   // !% 2 => player2 turn
-
-  room_turn[player1.room] = '';
 
   if(die %2)
   {
@@ -373,17 +386,18 @@ function start_game(player1, player2)
     room_turn[player1.room] = player2;
   }
 
-  io.sockets.in(player1.room).emit('StartTurn',room_turn[player1.room].name);
   start_turn(room_turn[player1.room]);
 }
 
 function start_turn(player)
 {
+  console.log('Start turn',player.uname,'-0-32012-312-3012-3123-013-013');
   //Set creatures ready
   player.turn_resource = false;
-  player.resources = player.c_resources;
+  player.strength = player.c_strength;
+  player.intel = player.c_intel;
   draw_card(player);
-  io.sockets.in(player1.room).emit('StartTurn',room_turn[player.room].name);
+  io.sockets.in(player.room).emit('StartTurn',player.uname);
 }
 
 function draw_card(player)
