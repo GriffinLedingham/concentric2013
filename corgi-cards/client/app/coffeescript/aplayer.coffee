@@ -4,6 +4,7 @@ class window.Player
       @actions
       @board
       @socket
+      @player1
     } = @delegate
 
     @life = ko.observable 30
@@ -33,7 +34,6 @@ class window.Player
 
     @myTurn = ko.observable false
 
-
     @socket.on "CardDraw", (data) =>
 
       card = _.find @actions(), (action) =>
@@ -44,8 +44,8 @@ class window.Player
       @actions.push
         message: "You drew a card"
         target: data.id
-
-      data.x = Math.random()*1300
+      console.log "!!!", @player1()
+      data.x = Math.random()*500 + (if @player1() then 0 else 600)
       data.y = 700
       card = new Card @, data
       @hand.push card

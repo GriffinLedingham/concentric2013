@@ -185,7 +185,7 @@ class Action
     @target = ko.observable null
 
 
-    @message = ko.observable data.message or "---"
+    @message = ko.observable(data.message or "---")
 
 class AppViewModel
   constructor: () ->
@@ -193,8 +193,9 @@ class AppViewModel
     @username = ko.observable null
     @room = ko.observable null
 
-    @activeTurn = ko.observable false
+    @player1 = ko.observable false
 
+    @activeTurn = ko.observable false
 
     @socket = io.connect(window.location.origin)
 
@@ -216,6 +217,10 @@ class AppViewModel
 
     @self = new Player @, "self"
     @opponent = new Player @, "opponent"
+
+    @socket.on "FirstPlayer", (name) =>
+      console.log name, @username()
+      @player1(name is @username())
 
     @socket.on "PlayerLife", (data) =>
       selfLife = data.self
@@ -247,7 +252,10 @@ class AppViewModel
           @actions.push
             message: "Your opponent lost #{opponentDiff*-1} life"
 
+
+
     @socket.on "StartTurn", (name) =>
+
       @actions.push
         message: "Starting turn: #{name}"
 

@@ -416,20 +416,8 @@ function start_game(player1, player2)
     player2.deck[i].uname = player2.uname;
   }
 
-  player1.hand = [];
-  player2.hand = [];
-
-  for(var i = 0;i<5;i++)
-  {
-    draw_card(player1);
-    draw_card(player2);
-  }
-
   //Roll dice
   var die = Math.floor((Math.random()*5)+1);
-
-  // % 2 => player1 turn
-  // !% 2 => player2 turn
 
   if(die %2)
   {
@@ -439,6 +427,21 @@ function start_game(player1, player2)
   {
     room_turn[player1.room] = player2;
   }
+
+  io.sockets.in(player1.room).emit('FirstPlayer',room_turn[player1.room].uname);
+
+  player1.hand = [];
+  player2.hand = [];
+
+  for(var i = 0;i<5;i++)
+  {
+    draw_card(player1);
+    draw_card(player2);
+  }
+
+  // % 2 => player1 turn
+  // !% 2 => player2 turn
+
 
   start_turn(room_turn[player1.room]);
 }
@@ -790,6 +793,7 @@ function spell(spell,defender,socket)
 
         if(defender_life < 1)
         {
+          console.log("creature dead");
           active_cards[socket.room].splice(defender_index,1);
         }
         else
@@ -869,6 +873,9 @@ function getStats(name)
       break;
     case 'DamageAll':
       return {attack: null, health: null, special: {ability: "damage", value: 1}, cost:1};
+      break;
+    case 'Damage':
+      return {attack: null, health: null, special: {ability: "damage", value: 2}, cost:1};
       break;
   }
 }
