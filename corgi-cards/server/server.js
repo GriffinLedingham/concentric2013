@@ -77,6 +77,7 @@ io.sockets.on('connection', function (socket) {
         {
           if(room_players[room][0].uname === socket.uname)
           {
+            console.log(room_players[room][0].hand, "@@@");
             socket.emit('SyncHand',room_players[room][0].hand);
             var opponent_hand = [];
             for(var i = 0;i< room_players[room][1].hand.length;i++)
@@ -166,8 +167,15 @@ io.sockets.on('connection', function (socket) {
     }
 
     active_cards[socket.room].push(data);
+    for(var i = 0; i < socket.hand.length; i++) {
+      if(socket.hand[i].id === data.id){
+        socket.hand.splice(i, 1)
+        break;
+      }
+    }
 
     io.sockets.in(socket.room).emit('CardPlayed',data);
+
   });
 
   socket.on('CardToHand',function(data){
