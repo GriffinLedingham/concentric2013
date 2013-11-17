@@ -16,7 +16,7 @@ class window.Player
     @opponentHand = ko.observableArray []
 
     @socket.on "CardDraw", (data) =>
-      data.x = Math.random()*500
+      data.x = Math.random()*1300
       data.y = 700
       card = new Card @, data
       @hand.push card

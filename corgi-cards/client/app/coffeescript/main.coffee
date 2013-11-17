@@ -107,7 +107,11 @@ class Board
       else @target card
 
     if @action() and @target()
-      @socket.emit "CardInteraction", @action().id, @target().id
+
+      action = if _.isString(@action()) then @action() else @action().id
+      target = if _.isString(@target()) then @target() else @target().id
+
+      @socket.emit "CardInteraction", action, target
 
     false
 
@@ -121,11 +125,24 @@ class Board
       @target "self"
     else @target null
 
+    if @action() and @target()
+
+      action = if _.isString(@action()) then @action() else @action().id
+      target = if _.isString(@target()) then @target() else @target().id
+
+      @socket.emit "CardInteraction", action, target
+
   handleOpponentClick: =>
     if @target() isnt "opponent"
       @target "opponent"
     else @target null
 
+    if @action() and @target()
+
+      action = if _.isString(@action()) then @action() else @action().id
+      target = if _.isString(@target()) then @target() else @target().id
+
+      @socket.emit "CardInteraction", action, target
 
 class AppViewModel
   constructor: () ->
