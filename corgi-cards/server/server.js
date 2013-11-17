@@ -315,7 +315,8 @@ io.sockets.on('connection', function (socket) {
         }
       }
 
-      if(typeof player_card !== 'undefined')
+      //if(typeof player_card !== 'undefined')
+      if(player_card.name === 'DamageAll')
       {
         opponent_card = 'all';
       }
@@ -790,7 +791,7 @@ function spell(spell,defender,socket)
         var damaged_card = active_cards[socket.room][defender_index];
 
         defender_life = defender_life - spell_damage;
-
+        
         if(defender_life < 1)
         {
           console.log("creature dead");

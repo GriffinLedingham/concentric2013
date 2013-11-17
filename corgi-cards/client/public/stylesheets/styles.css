@@ -9,7 +9,8 @@ ul {
 body {
   padding: 0;
   margin: 0;
-  font-family: robotomedium; }
+  font-family: robotomedium;
+  background-image: url("/images/background-castle.jpg"); }
 
 .yougotfucked {
   -webkit-animation-duration: 10s !important;
@@ -19,15 +20,19 @@ body {
 
 .card {
   position: absolute;
-  width: 80px;
-  height: 120px;
-  color: white;
-  border: 4px solid black;
-  border-radius: 15px; }
+  width: 140px;
+  height: 198px;
+  font-family: "card-text";
+  font-size: 46px;
+  border-radius: 8px;
+  text-shadow: 2px 0 0 black, -2px 0 0 black, 0 2px 0 black, 0 -2px 0 black, 2px 2px black, -2px -2px 0 black, 2px -2px 0 black, -2px 2px 0 black;
+  background-size: contain !important; }
   .card.monster {
-    background-color: red; }
+    background-color: red;
+    color: #e92910; }
   .card.spell {
-    background-color: blue; }
+    background-color: blue;
+    color: #0173ff; }
   .card.opponent {
     background-color: black;
     top: 500px;
@@ -36,6 +41,25 @@ body {
     border-color: yellow; }
   .card.target {
     border-color: red; }
+  .card .cost {
+    position: absolute;
+    bottom: 2px;
+    right: 3px; }
+  .card.spell .cost {
+    bottom: 6px;
+    right: 10px; }
+  .card[data-type="OneOne"] {
+    background: url("/images/peasant.jpg"); }
+  .card[data-type="TwoTwo"] {
+    background: url("/images/knight.jpg"); }
+  .card[data-type="Heal"] {
+    background: url("/images/heal.jpg"); }
+  .card[data-type="DamageAll"] {
+    background: url("/images/damage-all.jpg"); }
+  .card[data-type="Damage"] {
+    background: url("/images/wizard.jpg"); }
+  .card[data-type="Draw"] {
+    background: url("/images/draw.jpg"); }
 
 #board {
   position: absolute;
@@ -129,6 +153,9 @@ body {
   .resources img {
     width: 40px;
     height: 40px; }
+  .resources .intel img {
+    width: 28px;
+    margin-left: 10px; }
   .resources .count {
     display: inline-block;
     position: relative;

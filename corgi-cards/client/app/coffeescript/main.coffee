@@ -78,7 +78,7 @@ class Board
             card.id is combat.target.id
 
         if action?
-          if combat.action.life is 0
+          if combat.action.life <= 0
             @cards _.without @cards(), action
             @actions.push new Action
                 message: "#{action.name} is in a better place"
@@ -88,7 +88,7 @@ class Board
                 message: "#{action.name} has taken #{combat.action.damage} damage"
 
         if target?
-          if combat.target.life is 0
+          if combat.target.life <= 0
             @cards _.without @cards(), target
             @actions.push new Action
                 message: "#{target.name} is in a better place"
