@@ -87,16 +87,17 @@ class Board
             @actions.push new Action
                 message: "#{action.name} has taken #{combat.action.damage} damage"
 
-        if combat.target.life is 0
-          @cards _.without @cards(), target
-          @actions.push new Action
-              message: "#{target.name} is in a better place"
-        else
-          target.stats.health combat.target.life
-          target.takingDamage null
-          target.takingDamage (if combat.target.damage < 0 then "+" + combat.target.damage*-1 else "-" + combat.target.damage)
-          @actions.push new Action
-              message: "#{action.name} has taken #{combat.target.damage} damage"
+        if target?
+          if combat.target.life is 0
+            @cards _.without @cards(), target
+            @actions.push new Action
+                message: "#{target.name} is in a better place"
+          else
+            target.stats.health combat.target.life
+            target.takingDamage null
+            target.takingDamage (if combat.target.damage < 0 then "+" + combat.target.damage*-1 else "-" + combat.target.damage)
+            @actions.push new Action
+                message: "#{target.name} has taken #{combat.target.damage} damage"
 
       @action null
       @target null
