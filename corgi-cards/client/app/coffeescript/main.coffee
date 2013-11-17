@@ -29,6 +29,7 @@ class Board
 
 
     @socket.on 'CardPlayed', (data) =>
+
       @cards.push new Card @, data
 
       $cardvm = $("##{data.id}")

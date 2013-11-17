@@ -18,13 +18,15 @@ class window.Card
 
     @stats = new Stats data.stats
 
+    console.log @stats
+
   isMine: (card, ui) =>
     app.username() is @uname
 
 
 class window.Stats
   constructor: (stats) ->
-
+    console.log stats
     @attack = ko.observable(if stats.attack? then stats.attack else -1)
     @health = ko.observable(if stats.health? then stats.health else -1)
 

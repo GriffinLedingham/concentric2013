@@ -10,13 +10,13 @@
 
   <article id="board" data-bind="with: board, droppable: {accept: '.hand', drop: board.dropCard}">
     <!-- ko foreach: cards -->
-        <div class="card" data-bind="text:name, draggable: {dragstop: $parent.dragstop, enabled: isMine}, attr: {id: id}, css: {monster: type() == 'monster', spell: type() == 'spell'}"></div>
+        <div class="card" data-bind="text:name + '  ' + stats.attack() + '  ' + stats.health(), draggable: {dragstop: $parent.dragstop, enabled: isMine}, attr: {id: id}, css: {monster: type() == 'monster', spell: type() == 'spell'}"></div>
     <!-- /ko -->
   </article>
 
   <!-- ko with: player -->
     <!-- ko foreach: hand -->
-        <div class="card hand" data-bind="text:name, draggable: {dragstop: $parent.dragstop, enabled: isMine}, attr: {id: id}, css: {monster: type() == 'monster', spell: type() == 'spell'}"></div>
+        <div class="card hand" data-bind="text:name + '  ' + stats.attack() + '  ' + stats.health(), draggable: {dragstop: $parent.dragstop, enabled: isMine}, attr: {id: id}, css: {monster: type() == 'monster', spell: type() == 'spell'}"></div>
     <!-- /ko -->
 
     <!-- ko foreach: opponentHand -->

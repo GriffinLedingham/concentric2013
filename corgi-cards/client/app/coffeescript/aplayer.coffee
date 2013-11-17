@@ -83,3 +83,5 @@ class window.Player
 
   isMine: () =>
     true
+
+

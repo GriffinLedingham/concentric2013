@@ -161,13 +161,13 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('CardPlayed',function(data){
+    console.log(socket.room, socket.uname);
     if(typeof socket.room === 'undefined' || typeof socket.uname === 'undefined')
     {
       return;
     }
 
-    var card;
-    for(var i = 0;i<socket.hand;i++)
+    for(var i = 0;i<socket.hand.length;i++)
     {
       if(socket.hand[i].id === data)
       {
@@ -333,7 +333,7 @@ function getStats(name)
       break;
     case 'RDW20':
       return {attack:1,health:1,special:null};
-      break; 
+      break;
     case 'Control1':
       return {attack:1,health:1,special:null};
       break;
