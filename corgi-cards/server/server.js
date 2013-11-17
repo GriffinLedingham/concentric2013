@@ -63,6 +63,13 @@ io.sockets.on('connection', function (socket) {
   socket.uname;
   socket.deck;
   socket.discard;
+
+  //Current, this turn
+  socket.resources;
+
+  //Total resources over game-span
+  socket.c_resources;
+  
   socket.life = 30;
 
   socket.hand = [];
