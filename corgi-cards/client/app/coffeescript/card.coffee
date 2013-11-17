@@ -18,7 +18,7 @@ class window.Card
 
     @stats = new Stats data.stats
 
-    @takingDamage false
+    @takingDamage = ko.observable false
 
 
   isMine: (card, ui) =>

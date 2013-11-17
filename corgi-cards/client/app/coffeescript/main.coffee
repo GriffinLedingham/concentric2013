@@ -80,6 +80,15 @@ class Board
           target.stats.health combat.target.life
           target.takingDamage true
 
+
+        window.setTimeout(
+
+          () =>
+            target.takingDamage false
+
+          3000
+        )
+
       else if data.type is 'spell'
         console.log "spell was cast on yo MUTHAFUCKIN FACE"
 
