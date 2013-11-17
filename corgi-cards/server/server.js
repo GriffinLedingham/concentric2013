@@ -262,6 +262,7 @@ io.sockets.on('connection', function (socket) {
     else
     {
       spell(player_card,opponent_card,socket);
+      io.sockets.in(socket.room).emit('SpellCast',player_card.id);
     }
 
   });

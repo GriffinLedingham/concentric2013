@@ -34,6 +34,7 @@ body {
   position: absolute;
   width: 900px;
   height: 600px;
+  margin-left: 200px;
   background-color: green; }
 
 .play {
@@ -53,3 +54,23 @@ body {
   position: absolute;
   top: 700px;
   width: 100%; }
+
+.player {
+  position: absolute;
+  top: 200px;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  border: solid 8px black; }
+
+#self {
+  left: 20px;
+  background-color: salmon; }
+  #self.active {
+    border-color: #ccffff; }
+
+#opponent {
+  left: 1160px;
+  background-color: purple; }
+  #opponent.active {
+    border-color: #ff0033; }
