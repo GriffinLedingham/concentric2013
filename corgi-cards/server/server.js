@@ -262,6 +262,15 @@ io.sockets.on('connection', function (socket) {
     else
     {
       spell(player_card,opponent_card,socket);
+      for(var j = 0;j<active_cards[socket.room].length;j++)
+      {
+        if(active_cards[socket.room][j].id === player_card.id)
+        {
+          active_cards[socket.room].splice(j,1);
+          break;
+        }
+      }
+      io.sockets.in(socket.room).emit('SpellCast',player_card.id);
     }
 
   });
