@@ -44,37 +44,52 @@
 
   <!-- /ko -->
 
-  <aside id="self" class="player" data-bind="
-  click: board.handleSelfClick,
-  css: {active: board.target() == 'self'},
-  with: self">
+  <aside id="self" data-bind="with:self">
+
+    <div class="player" data-bind="click: board.handleSelfClick,
+      css: {active: board.target() == 'self'}">
+    </div>
+
     <div class="lifeTotal" data-bind="text: 'You: ' + life()"></div>
     <!-- ko if: diff -->
       <div class="yougotfucked animated fadeOutUpBig" data-bind="text: diff"></div>
     <!-- /ko -->
 
     <aside class="resources">
-      <div class="count strength" data-bind="text: 'Strength: ' + strengthCount()"></div>
-      <div class="count intel" data-bind="text: 'Intel: ' + intelCount()"></div>
-      <div class="addResource strength" data-bind="click: addStrength, visible: !haveUsedResource()">+</div>
-      <div class="addResource intel" data-bind="click: addIntel, visible: !haveUsedResource()">+</div>
+      <div class="strength" data-bind="click: addStrength, css: {add: !haveUsedResource()}">
+        <img src="images/strength.png" alt="str">
+        <div class="count" data-bind="text:strengthCount"></div>
+      </div>
+      <div class="intel" data-bind="click: addIntel, css: {add: !haveUsedResource()}">
+        <img src="images/intel.png" alt="int">
+        <div class="count" data-bind="text:intelCount"></div>
+      </div>
     </aside>
 
   </aside>
 
 
-  <aside id="opponent" class="player" data-bind="
-    click: board.handleOpponentClick,
-    css: {active: board.target() == 'opponent'},
+  <aside id="opponent" data-bind="
     with: opponent">
+
+    <div class="player" data-bind="    click: board.handleOpponentClick,
+    css: {active: board.target() == 'opponent'}">
+    </div>
+
     <div class="lifeTotal" data-bind="text: 'Opponent: ' + life()"></div>
     <!-- ko if: diff -->
       <div class="yougotfucked animated fadeOutUpBig" data-bind="text: diff"></div>
     <!-- /ko -->
 
     <aside class="resources">
-      <div class="count strength" data-bind="text: 'Strength: ' + strengthCount()"></div>
-      <div class="count intel" data-bind="text: 'Intel: ' + intelCount()"></div>
+      <div class="strength">
+        <img src="images/strength.png" alt="str">
+        <div class="count" data-bind="text:strengthCount"></div>
+      </div>
+      <div class="intel">
+        <img src="images/intel.png" alt="int">
+        <div class="count" data-bind="text:intelCount"></div>
+      </div>
     </aside>
 
   </aside>

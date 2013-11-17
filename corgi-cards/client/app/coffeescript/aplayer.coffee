@@ -108,6 +108,7 @@ class window.Player
 
 
   addStrength: () =>
+    return if @haveUsedResource()
     @strength @strength()+1
     @strengthLeft @strengthLeft()+1
 
@@ -118,6 +119,7 @@ class window.Player
     false
 
   addIntel: () =>
+    return if @haveUsedResource()
     @intel @intel()+1
     @intelLeft @intelLeft()+1
 

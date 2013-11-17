@@ -77,31 +77,36 @@ body
   width: 100%
 
 .player
-  position: absolute
-  top: $boardHeight/2 - 100px
   border-radius: 50%
   width: 100px
   height: 100px
 
   border: solid 8px black
 
+#self, #opponent
+  position: absolute
+  top: $boardHeight/2 - 100px
+
 #self
   left: 20px
-  background-color: salmon
 
-  &.active
-    border-color: #CCFFFF
+  .player
+    background-color: salmon
+
+    &.active
+      border-color: #CCFFFF
+
 
 #opponent
   left: $boardWidth + 200px + 60px
-  background-color: purple
 
-  &.active
-    border-color: #FF0033
+  .player
+    background-color: purple
+    &.active
+      border-color: #FF0033
 
 .lifeTotal
   position: relative
-  top: 120px
 
 .endTurn
   width: 100px
@@ -114,7 +119,7 @@ body
   border: solid 1px black
 
   position: absolute
-  right: 150px
+  right: 250px
   top: 20px
 
   &:hover
@@ -123,7 +128,40 @@ body
 
 .resources
   position: relative
-  top: 150px
+  margin-top: 20px
+
+  .strength.add, .intel.add
+    cursor: pointer
+
+  .strength.add:hover::before
+    content: "+"
+    font-size: 40px
+    width: 20px
+    height: 20px
+    left: 86px
+    top: -10px
+    color: black
+    opacity: 1
+    position: absolute
+
+  .intel.add:hover::before
+    content: "+"
+    font-size: 40px
+    width: 20px
+    height: 20px
+    left: 86px
+    top: 34px
+    color: black
+    position: absolute
+
+  img
+    width: 40px
+    height: 40px
+  .count
+    display: inline-block
+    position: relative
+    top: -16px
+    left: 8px
 
 #log
   position: absolute
