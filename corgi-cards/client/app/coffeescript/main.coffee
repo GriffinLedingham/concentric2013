@@ -96,9 +96,6 @@ class Board
 
     card = ko.dataFor ui.helper.get(0)
 
-    return unless app.self.canPlay card
-
-
     @socket.emit 'CardPlayed', card.id
 
   dragstop: (ev, ui) =>
