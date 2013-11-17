@@ -472,6 +472,10 @@ function spell(spell,defender,socket)
       case 'damage':
         opponent.life = opponent.life - spell.stats.special.value;
         self.life = self.life - spell.stats.special.value;
+        
+        opponent.emit('PlayerLife', {opponent:self.life,self:opponent.life});
+        self.emit('PlayerLife', {opponent:opponent.life,self:self.life});
+
 
         var toRemove = [];
 
@@ -513,6 +517,9 @@ function spell(spell,defender,socket)
       case 'heal':
         opponent.life = opponent.life + spell.stats.special.value;
         self.life = self.life + spell.stats.special.value;
+
+        opponent.emit('PlayerLife', {opponent:self.life,self:opponent.life});
+        self.emit('PlayerLife', {opponent:opponent.life,self:self.life});
 
         for(var i = 0;i<active_cards[socket.room].length;i++)
         {
@@ -558,10 +565,16 @@ function spell(spell,defender,socket)
         break;
       case 'damage':
         self.life = self.life - spell.stats.special.value;
+
+        opponent.emit('PlayerLife', {opponent:self.life,self:opponent.life});
+        self.emit('PlayerLife', {opponent:opponent.life,self:self.life});
         //TODO: Return Results
         break;
       case 'heal':
         self.life = self.life + spell.stats.special.value;
+
+        opponent.emit('PlayerLife', {opponent:self.life,self:opponent.life});
+        self.emit('PlayerLife', {opponent:opponent.life,self:self.life});
         //TODO: Return Results
         break;
     }
@@ -588,10 +601,16 @@ function spell(spell,defender,socket)
         break;
       case 'damage':
         opponent.life = opponent.life - spell.stats.special.value;
+
+        opponent.emit('PlayerLife', {opponent:self.life,self:opponent.life});
+        self.emit('PlayerLife', {opponent:opponent.life,self:self.life});
         //TODO: Return Results
         break;
       case 'heal':
         opponent.life = opponent.life + spell.stats.special.value;
+
+        opponent.emit('PlayerLife', {opponent:self.life,self:opponent.life});
+        self.emit('PlayerLife', {opponent:opponent.life,self:self.life});
         //TODO: Return Results
         break;
     }
