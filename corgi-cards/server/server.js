@@ -42,7 +42,7 @@ for(var i=0;i<20;i++)
   if(i % 2)
     name = "Draw";
   else
-    name = "Damage";
+    name = "Heal";
 
   if(i % 5)
     name = "DamageAll";
@@ -469,6 +469,24 @@ function spell(spell,defender,socket)
       case 'heal':
         opponent.life = opponent.life + spell.stats.special.value;
         self.life = self.life + spell.stats.special.value;
+
+        for(var i = 0;i<active_cards[socket.room].length;i++)
+        {
+          if(active_cards[socket.room][i].stats.attack)
+          {
+            var defender_life = active_cards[socket.room][i].stats.health;
+            var spell_damage = spell.stats.special.value;
+
+            defender_life = defender_life + spell_damage;
+            active_cards[socket.room][i].stats.health = defender_life;
+            
+            var result_obj = {
+              action: null,
+              target: {id: active_cards[socket.room][i].id, damage: spell_damage, life: defender_life}
+            };
+            io.sockets.in(socket.room).emit('CardInteraction', {type:'attack', result: result_obj});
+          }
+        }
         //TODO: Return Results
         break;
     }
@@ -585,6 +603,11 @@ function spell(spell,defender,socket)
 
         defender_life = defender_life + spell_damage;
         active_cards[socket.room][defender_index].stats.health = defender_life;
+        var result_obj = {
+          action: null,
+          target: {id: active_cards[socket.room][defender_index].id, damage: spell_damage, life: defender_life}
+        };
+        io.sockets.in(socket.room).emit('CardInteraction', {type:'attack', result: result_obj});
         //TODO: Return Results
         break;
     }
@@ -682,8 +705,8 @@ function getStats(name)
     case 'Draw':
       return {attack: null, health: null, special: {ability: "draw", value: 1}};
       break;
-    case 'Damage':
-      return {attack: null, health: null, special: {ability: "damage", value: 2}};
+    case 'Heal':
+      return {attack: null, health: null, special: {ability: "heal", value: 2}};
       break;
     case 'DamageAll':
       return {attack: null, health: null, special: {ability: "damage", value: 1}};
