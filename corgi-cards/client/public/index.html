@@ -20,13 +20,13 @@
 
           <span data-bind="text:name + '  ' + stats.attack() + '  ' + stats.health()"></span>
           <!-- ko if: takingDamage -->
-              <div class="yougotfucked animated fadeOutUpBig">-5</div>
+              <div class="yougotfucked animated fadeOutUpBig" data-bind="text: takingDamage"></div>
             <!-- /ko -->
           </div>
     <!-- /ko -->
   </article>
 
-  <!-- ko with: player -->
+  <!-- ko with: self -->
     <!-- ko foreach: hand -->
         <div class="card hand" data-bind="text:name + '  ' + stats.attack() + '  ' + stats.health(), draggable: {dragstop: $parent.dragstop, enabled: isMine}, attr: {id: id}, css: {monster: type() == 'monster', spell: type() == 'spell'}"></div>
     <!-- /ko -->
@@ -37,15 +37,30 @@
 
   <!-- /ko -->
 
-  <aside id="self" class="player" data-bind="click: board.handleSelfClick, css: {active: board.target() == 'self'}">
-    <div class="eye left"></div>
-    <div class="eye right"></div>
-    <div class="mouth"></div>
+  <aside id="self" class="player" data-bind="
+  click: board.handleSelfClick,
+  css: {active: board.target() == 'self'},
+  with: self">
+    <div class="lifeTotal" data-bind="text: 'You: ' + life()"></div>
+    <!-- ko if: diff -->
+    <div class="yougotfucked animated fadeOutUpBig" data-bind="text: diff"></div>
+    <!-- /ko -->
   </aside>
 
-  <aside id="opponent" class="player" data-bind="click: board.handleOpponentClick, css: {active: board.target() == 'opponent'}">
 
+  <aside id="opponent" class="player" data-bind="
+    click: board.handleOpponentClick,
+    css: {active: board.target() == 'opponent'},
+    with: opponent">
+    <div class="lifeTotal" data-bind="text: 'Opponent: ' + life()"></div>
+    <!-- ko if: diff -->
+    <div class="yougotfucked animated fadeOutUpBig" data-bind="text: diff"></div>
+    <!-- /ko -->
   </aside>
+
+
+
+
 
   <article class="login">
     <input type="text" placeholder="username" data-bind="

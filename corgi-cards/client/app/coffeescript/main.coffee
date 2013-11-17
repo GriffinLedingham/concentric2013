@@ -78,16 +78,8 @@ class Board
           @cards _.without @cards(), target
         else
           target.stats.health combat.target.life
-          target.takingDamage true
-
-
-        window.setTimeout(
-
-          () =>
-            target.takingDamage false
-
-          3000
-        )
+          target.takingDamage null
+          target.takingDamage (if combat.target.damage < 0 then "+" + combat.target.damage*-1 else "-" + combat.target.damage)
 
       else if data.type is 'spell'
         console.log "spell was cast on yo MUTHAFUCKIN FACE"
@@ -175,14 +167,33 @@ class AppViewModel
 
     @board = new Board @
 
-    @player = new Player @
+    @self = new Player @, "self"
+    @opponent = new Player @, "opponent"
+
+    @socket.on "PlayerLife", (data) =>
+      selfLife = data.self
+      opponentLife = data.opponent
+
+      selfDiff = selfLife - @self.life()
+      opponentDiff = opponentLife - @opponent.life()
+
+      @self.diff null
+      @opponent.diff null
+
+      @self.diff selfDiff
+      @opponent.diff opponentDiff
+
+      @self.life selfLife
+      @opponent.life opponentLife
+
+
 
   restart: () =>
     @board.clear()
-    @player.hand.splice 0
-    @player.deck.splice 0
-    @player.opponentHand.splice 0
-    @player.discard.splice 0
+    @self.hand.splice 0
+    @self.deck.splice 0
+    @self.opponentHand.splice 0
+    @self.discard.splice 0
 
   login: (player, ev) =>
     if ev.keyCode is 13
@@ -205,6 +216,7 @@ $ ->
 
 
   ko.applyBindings(app, $("html").get(0))
+
 
 
 
