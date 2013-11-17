@@ -10,7 +10,8 @@ window.Player = (function() {
     this.delegate = delegate;
     this.isMine = __bind(this.isMine, this);
     this.dragstop = __bind(this.dragstop, this);
-    this.addResource = __bind(this.addResource, this);
+    this.addIntel = __bind(this.addIntel, this);
+    this.addStrength = __bind(this.addStrength, this);
     _ref = this.delegate, this.board = _ref.board, this.socket = _ref.socket;
     this.life = ko.observable(30);
     this.diff = ko.observable(false);
@@ -18,12 +19,17 @@ window.Player = (function() {
     this.deck = ko.observableArray([]);
     this.discard = ko.observableArray([]);
     this.opponentHand = ko.observableArray([]);
-    this.resources = ko.observable(0);
-    this.resourceLeft = ko.observable(0);
-    this.resourceCount = ko.computed(function() {
-      return _this.resourceLeft() + '/' + _this.resources();
+    this.strength = ko.observable(0);
+    this.strengthLeft = ko.observable(0);
+    this.strengthCount = ko.computed(function() {
+      return _this.strengthLeft() + '/' + _this.strength();
     });
-    this.haveUsedResource = ko.observable(false);
+    this.intel = ko.observable(0);
+    this.intelLeft = ko.observable(0);
+    this.intelCount = ko.computed(function() {
+      return _this.intelLeft() + '/' + _this.intel();
+    });
+    this.haveUsedResource = ko.observable(true);
     this.myTurn = ko.observable(false);
     this.socket.on("CardDraw", function(data) {
       var $cardvm, card;
@@ -97,9 +103,19 @@ window.Player = (function() {
     this.socket.on("PlayerLifeChange", function(data) {});
   }
 
-  Player.prototype.addResource = function() {
-    this.resources(this.resources() + 1);
-    this.resourceLeft(this.resourceLeft() + 1);
+  Player.prototype.addStrength = function() {
+    this.strength(this.strength() + 1);
+    this.strengthLeft(this.strengthLeft() + 1);
+    this.haveUsedResource(true);
+    this.socket.emit("AddStrength");
+    return false;
+  };
+
+  Player.prototype.addIntel = function() {
+    this.intel(this.intel() + 1);
+    this.intelLeft(this.intelLeft() + 1);
+    this.haveUsedResource(true);
+    this.socket.emit("AddIntel");
     return false;
   };
 
@@ -202,7 +218,8 @@ guid = function() {
 
 Board = (function() {
   function Board(delegate) {
-    var _this = this;
+    var _ref,
+      _this = this;
     this.delegate = delegate;
     this.handleOpponentClick = __bind(this.handleOpponentClick, this);
     this.handleSelfClick = __bind(this.handleSelfClick, this);
@@ -211,7 +228,7 @@ Board = (function() {
     this.dragstop = __bind(this.dragstop, this);
     this.dropCard = __bind(this.dropCard, this);
     this.clear = __bind(this.clear, this);
-    this.socket = this.delegate.socket;
+    _ref = this.delegate, this.socket = _ref.socket, this.activeTurn = _ref.activeTurn;
     this.action = ko.observable(null);
     this.target = ko.observable(null);
     this.cards = ko.observableArray([]);
@@ -259,8 +276,8 @@ Board = (function() {
       if (data.type === 'attack') {
         combat = data.result;
         action = _.find(_this.cards(), function(card) {
-          var _ref;
-          return card.id === ((_ref = combat.action) != null ? _ref.id : void 0);
+          var _ref1;
+          return card.id === ((_ref1 = combat.action) != null ? _ref1.id : void 0);
         });
         target = _.find(_this.cards(), function(card) {
           return card.id === combat.target.id;
@@ -293,6 +310,9 @@ Board = (function() {
 
   Board.prototype.dropCard = function(data, ui) {
     var card;
+    if (!this.activeTurn()) {
+      return;
+    }
     card = ko.dataFor(ui.helper.get(0));
     return this.socket.emit('CardPlayed', card.id);
   };
@@ -384,6 +404,21 @@ AppViewModel = (function() {
     this.socket = io.connect(window.location.origin);
     this.host = window.location.origin;
     this.board = new Board(this);
+    this.activeTurn.subscribe(function(val) {
+      if (val) {
+        return _.each(_this.board.cards(), function(card) {
+          if (card.uname === _this.username()) {
+            return $("#" + card.id).draggable("enable");
+          }
+        });
+      } else {
+        return _.each(_this.board.cards(), function(card) {
+          if (card.uname === _this.username()) {
+            return $("#" + card.id).draggable("option", "disabled", true);
+          }
+        });
+      }
+    });
     this.self = new Player(this, "self");
     this.opponent = new Player(this, "opponent");
     this.socket.on("PlayerLife", function(data) {
@@ -402,9 +437,36 @@ AppViewModel = (function() {
     this.socket.on("StartTurn", function(name) {
       console.log('starting ' + name);
       if (name !== _this.username()) {
-        return _this.activeTurn(false);
+        _this.activeTurn(false);
       } else {
-        return _this.activeTurn(true);
+        _this.activeTurn(true);
+      }
+      if (_this.activeTurn()) {
+        _this.self.haveUsedResource(false);
+        _this.self.strengthLeft(_this.self.strength());
+        return _this.self.intelLeft(_this.self.intel());
+      }
+    });
+    this.socket.on("AddStrength", function(data) {
+      var me;
+      me = data.uname === _this.username();
+      if (me) {
+        _this.self.strengthLeft(data.value);
+        return _this.self.strength(data.cumulative);
+      } else {
+        _this.opponent.strengthLeft(data.value);
+        return _this.opponent.strength(data.cumulative);
+      }
+    });
+    this.socket.on("AddIntel", function(data) {
+      var me;
+      me = data.uname === _this.username();
+      if (me) {
+        _this.self.intelLeft(data.value);
+        return _this.self.intel(data.cumulative);
+      } else {
+        _this.opponent.intelLeft(data.value);
+        return _this.opponent.intel(data.cumulative);
       }
     });
   }
