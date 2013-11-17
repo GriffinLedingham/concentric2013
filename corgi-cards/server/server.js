@@ -20,12 +20,20 @@ var active_cards = [];
 
 var room_players = [];
 
+var room_turn = [];
+
 var rdw = [];
 var control = [];
 
 for(var i =0;i<20;i++)
 {
-  var name = 'RDW'+1;
+  var name = 'OneOne';
+
+  if(i % 2)
+  {
+    name = 'TwoTwo';
+  }
+
   var stats_obj = getStats(name);
   rdw.push({
               name: name,
@@ -63,12 +71,13 @@ io.sockets.on('connection', function (socket) {
   socket.uname;
   socket.deck;
   socket.discard;
+  socket.turn_resources = false;
 
   //Current, this turn
-  socket.resources;
+  socket.resources = 0;
 
   //Total resources over game-span
-  socket.c_resources;
+  socket.c_resource = 0;
   
   socket.life = 30;
 
@@ -230,6 +239,7 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('CardInteraction',function(action_id,target_id){
+
     //Action is always player's card
     var player_card;
     var opponent_card;
@@ -304,6 +314,20 @@ io.sockets.on('connection', function (socket) {
     }
 
   });
+
+  socket.on('EndTurn',function(){  
+    if(room_turn[socket.room].uname === room_players[socket.room][0].uname)
+    {
+      //set turn to [socket.room][1]
+      room_turn[socket.room] = room_players[socket.room][1];
+    }
+    else
+    {
+      //set turn to [socket.room][0]
+      room_turn[socket.room] = room_players[socket.room][1];
+    }
+    start_turn(room_turn[socket.room]);
+  });
 });
 
 /*
@@ -331,6 +355,35 @@ function start_game(player1, player2)
     draw_card(player1);
     draw_card(player2);
   }
+
+  //Roll dice
+  var die = Math.floor((Math.random()*6)+1);
+
+  // % 2 => player1 turn
+  // !% 2 => player2 turn
+
+  room_turn[player1.room] = '';
+
+  if(die %2)
+  {
+    room_turn[player1.room] = player1;
+  }
+  else
+  {
+    room_turn[player1.room] = player2;
+  }
+
+  io.sockets.in(player1.room).emit('StartTurn',room_turn[player1.room].name);
+  start_turn(room_turn[player1.room]);
+}
+
+function start_turn(player)
+{
+  //Set creatures ready
+  player.turn_resource = false;
+  player.resources = player.c_resources;
+  draw_card(player);
+  io.sockets.in(player1.room).emit('StartTurn',room_turn[player.room].name);
 }
 
 function draw_card(player)
@@ -718,65 +771,11 @@ function getStats(name)
   //Switch statement
   switch(name)
   {
-    case 'RDW1':
-      return {attack:1,health:5,special:[]};
+    case 'OneOne':
+      return {attack:1,health:1,special:[]};
       break;
-    case 'RDW2':
-      return {attack:1,health:5,special:[]};
-      break;
-    case 'RDW3':
-      return {attack:1,health:5,special:[]};
-      break;
-    case 'RDW4':
-      return {attack:1,health:5,special:[]};
-      break;
-    case 'RDW5':
-      return {attack:1,health:2,special:[]};
-      break;
-    case 'RDW6':
-      return {attack:1,health:2,special:[]};
-      break;
-    case 'RDW7':
-      return {attack:1,health:5,special:[]};
-      break;
-    case 'RDW8':
-      return {attack:1,health:5,special:[]};
-      break;
-    case 'RDW9':
-      return {attack:1,health:5,special:[]};
-      break;
-    case 'RDW10':
-      return {attack:1,health:5,special:[]};
-      break;
-    case 'RDW11':
-      return {attack:1,health:5,special:[]};
-      break;
-    case 'RDW12':
-      return {attack:1,health:5,special:[]};
-      break;
-    case 'RDW13':
-      return {attack:1,health:5,special:[]};
-      break;
-    case 'RDW14':
-      return {attack:1,health:5,special:[]};
-      break;
-    case 'RDW15':
-      return {attack:1,health:2,special:[]};
-      break;
-    case 'RDW16':
-      return {attack:1,health:2,special:[]};
-      break;
-    case 'RDW17':
-      return {attack:1,health:5,special:[]};
-      break;
-    case 'RDW18':
-      return {attack:1,health:5,special:[]};
-      break;
-    case 'RDW19':
-      return {attack:1,health:5,special:[]};
-      break;
-    case 'RDW20':
-      return {attack:1,health:5,special:[]};
+    case 'TwoTwo':
+      return {attack:2,health:2,special:[]};
       break;
     case 'Draw':
       return {attack: null, health: null, special: {ability: "draw", value: 1}};
