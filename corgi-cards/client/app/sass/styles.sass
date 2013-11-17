@@ -3,6 +3,10 @@ $boardHeight: 600px
 
 $padding: 10px
 
+$blue: #0173ff
+
+$red: #e92910
+
 ul
   padding: 0
   margin: 0
@@ -26,16 +30,24 @@ body
 
 .card
   position: absolute
-  width: 80px
-  height: 120px
-  color: white
-  border: 4px solid black
-  border-radius: 15px
+  width: 140px
+  height: 198px
+
+  font-family: "card-text"
+
+  font-size: 46px
+
+  border-radius: 4px
+
+  text-shadow: 2px 0 0 black, -2px 0 0 black, 0 2px 0 black, 0 -2px 0 black, 2px 2px black, -2px -2px 0 black, 2px -2px 0 black, -2px 2px 0 black
 
   &.monster
     background-color: red
+    color: $red
+
   &.spell
     background-color: blue
+    color: $blue
 
   &.opponent
     background-color: black
@@ -47,6 +59,24 @@ body
 
   &.target
     border-color: red
+
+  .cost
+    position: absolute
+    bottom: 2px
+    right: 3px
+
+  &.OneOne
+    background: url('/images/peasant.jpg')
+  &.TwoTwo
+    background: url('/images/knight.jpg')
+  &.Heal
+    background: url('/images/heal.jpg')
+  &.DamageAll
+    background: url('/images/damage-all.jpg')
+  &.Damage
+    background: url('/images/wizard.jpg')
+
+  background-size: contain !important
 
 #board
   position: absolute
@@ -157,6 +187,11 @@ body
   img
     width: 40px
     height: 40px
+
+  .intel img
+    width: 28px
+    margin-left: 10px
+
   .count
     display: inline-block
     position: relative

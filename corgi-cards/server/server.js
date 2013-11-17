@@ -219,7 +219,7 @@ io.sockets.on('connection', function (socket) {
       {
         console.log('Not enough mana.');
         return;
-      } 
+      }
       else
       {
         socket.strength = socket.strength - card.stats.cost;

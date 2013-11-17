@@ -30,10 +30,10 @@ class window.Card
 class window.Stats
   constructor: (stats) ->
 
-    @attack = ko.observable(if stats.attack? then stats.attack else -1)
-    @health = ko.observable(if stats.health? then stats.health else -1)
-    @baseHealth = ko.observable(if stats.health? then stats.health else -1)
-    @cost = ko.observable(if stats.cost? then stats.cost else -1)
+    @attack = ko.observable(if stats.attack? then stats.attack else "")
+    @health = ko.observable(if stats.health? then stats.health else "")
+    @baseHealth = ko.observable(if stats.health? then stats.health else "")
+    @cost = ko.observable(if stats.cost? then stats.cost else "1m")
 
 class window.Ability
   constructor: (@type, @value) ->

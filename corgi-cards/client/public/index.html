@@ -14,11 +14,15 @@
         <div class="card" data-bind="draggable:
           {dragstop: $parent.dragstop, enabled: isMine},
           attr: {id: id},
+          attr: {
+            class: name
+          },
           css: {
             monster: type() == 'monster',
             spell: type() == 'spell',
             action: $parent.action() == $data,
-            target: $parent.target() == $data},
+            target: $parent.target() == $data,
+            card: true},
           click: $parent.handleCardClick
           ">
 
@@ -32,11 +36,23 @@
 
   <!-- ko with: self -->
     <!-- ko foreach: hand -->
-        <div class="card hand" data-bind="text:name + '  ' + stats.attack() + '  ' + stats.health() + ' (' + stats.cost() + ')', draggable: {dragstop: $parent.dragstop, enabled: isMine}, attr: {id: id},
+        <div class="card hand" data-bind="draggable:
+        {dragstop: $parent.dragstop, enabled: isMine},
+        attr: {
+          id: id,
+          class: name
+        },
         css: {
           monster: type() == 'monster',
-          spell: type() == 'spell'}"></div>
+          spell: type() == 'spell',
+          card: true,
+          hand: true}">
+        <span class="cost" data-bind="text: stats.cost"></span>
+
+        </div>
+
     <!-- /ko -->
+
 
     <!-- ko foreach: opponentHand -->
       <div class="card opponent" data-bind="attr: {id: id}"></div>
@@ -128,3 +144,5 @@
 </body>
 
 </html>
+
+<scrup
