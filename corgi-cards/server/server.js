@@ -25,19 +25,25 @@ var control = [];
 
 for(var i =0;i<20;i++)
 {
+  var name = 'RDW'+1;
+  var stats_obj = getStats(name);
   rdw.push({
-              name: 'RDW'+i,
+              name: name,
               id: guid(),
-              type:'monster'
+              type:'monster',
+              stats:stats_obj
           });
 }
 
 for(var i=0;i<20;i++)
 {
+  var name = 'Control'+1;
+  var stats_obj = getStats(name);
   control.push({
-              name: 'Control'+i,
+              name: name,
               id:guid(),
-              type:'spell'
+              type:'spell',
+              stats:stats_obj
           });
 }
 
@@ -234,5 +240,21 @@ function s4(){
 function guid(){
   return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
            s4() + '-' + s4() + s4() + s4();
+}
+
+function getStats(name)
+{
+  //
+
+  //Switch statement
+  switch(name)
+  {
+    case 'RDW1':
+      return {}
+
+    case 0 :
+
+      break;
+  }
 }
 
