@@ -78,8 +78,7 @@ class Board
           @cards _.without @cards(), target
         else
           target.stats.health combat.target.life
-          target.takingDamage true
-
+          target.takingDamage (if combat.target.damage < 0 then "+" + combat.target.damage*-1 else "-" + combat.target.damage)
 
         window.setTimeout(
 

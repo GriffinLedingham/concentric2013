@@ -20,7 +20,7 @@
 
           <span data-bind="text:name + '  ' + stats.attack() + '  ' + stats.health()"></span>
           <!-- ko if: takingDamage -->
-              <div class="yougotfucked animated fadeOutUpBig">-5</div>
+              <div class="yougotfucked animated fadeOutUpBig" data-bind="text: takingDamage"></div>
             <!-- /ko -->
           </div>
     <!-- /ko -->

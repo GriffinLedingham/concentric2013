@@ -479,7 +479,7 @@ function spell(spell,defender,socket)
 
             defender_life = defender_life + spell_damage;
             active_cards[socket.room][i].stats.health = defender_life;
-            
+
             var result_obj = {
               action: null,
               target: {id: active_cards[socket.room][i].id, damage: spell_damage, life: defender_life}
