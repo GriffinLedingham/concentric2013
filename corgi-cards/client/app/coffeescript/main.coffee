@@ -49,6 +49,17 @@ class Board
         $cardvm.css "left", card.x + 'px'
 
     @socket.on "CardInteraction", (data) =>
+
+      if data.type is 'attack'
+
+        combat = data.result
+
+        if combat.action.life is 0 then @cards _.without @cards(), (card) => card.id is @action().id
+        if combat.target.life is 0 then @cards _.without @cards(), (card) => card.id is @target().id
+
+      else if data.type is 'spell'
+        console.log "spell was cast on yo MUTHAFUCKIN FACE"
+
       @action null
       @target null
 
