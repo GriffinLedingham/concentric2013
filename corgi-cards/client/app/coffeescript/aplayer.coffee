@@ -16,13 +16,19 @@ class window.Player
 
     @opponentHand = ko.observableArray []
 
-    @resources = ko.observable 0
-    @resourceLeft = ko.observable 0
+    @strength = ko.observable 0
+    @strengthLeft = ko.observable 0
 
-    @resourceCount = ko.computed =>
-      @resourceLeft() + '/' + @resources()
+    @strengthCount = ko.computed =>
+      @strengthLeft() + '/' + @strength()
 
-    @haveUsedResource = ko.observable false
+    @intel = ko.observable 0
+    @intelLeft = ko.observable 0
+
+    @intelCount = ko.computed =>
+      @intelLeft() + '/' + @intel()
+
+    @haveUsedResource = ko.observable true
 
     @myTurn = ko.observable false
 
@@ -83,9 +89,22 @@ class window.Player
     @socket.on "PlayerLifeChange", (data) =>
 
 
-  addResource: () =>
-    @resources @resources()+1
-    @resourceLeft @resourceLeft()+1
+  addStrength: () =>
+    @strength @strength()+1
+    @strengthLeft @strengthLeft()+1
+
+    @haveUsedResource true
+
+    @socket.emit "AddStrength"
+
+    false
+
+  addIntel: () =>
+    @intel @intel()+1
+    @intelLeft @intelLeft()+1
+
+    @haveUsedResource true
+    @socket.emit "AddIntel"
 
     false
 

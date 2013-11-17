@@ -189,12 +189,42 @@ class AppViewModel
       @opponent.life opponentLife
 
     @socket.on "StartTurn", (name) =>
-      console.log 'starting ' + name 
+      console.log 'starting ' + name
       if name isnt @username() then @activeTurn false
       else @activeTurn true
 
+      if @activeTurn()
+
+        @self.haveUsedResource false
+        @self.strengthLeft @self.strength()
+        @self.intelLeft @self.intel()
 
 
+
+
+    @socket.on "AddStrength", (data) =>
+      console.log data
+      me = data.uname is @username()
+
+      if me
+        @self.strengthLeft data.value
+        @self.strength data.cumulative
+
+      else
+        @opponent.strengthLeft data.value
+        @opponent.strength data.cumulative
+
+    @socket.on "AddIntel", (data) =>
+
+      me = data.uname is @username()
+
+      if me
+        @self.intelLeft data.value
+        @self.intel data.cumulative
+
+      else
+        @opponent.intelLeft data.value
+        @opponent.intel data.cumulative
 
 
   endTurn: () =>

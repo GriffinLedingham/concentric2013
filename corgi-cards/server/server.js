@@ -75,7 +75,10 @@ io.sockets.on('connection', function (socket) {
 
   socket.strength = 0;
   socket.intel = 0;
-  
+
+  socket.c_strength = 0;
+  socket.c_intel = 0;
+
   socket.life = 30;
 
   socket.hand = [];
@@ -312,7 +315,7 @@ io.sockets.on('connection', function (socket) {
 
   });
 
-  socket.on('EndTurn',function(){  
+  socket.on('EndTurn',function(){
     if(room_turn[socket.room].uname === room_players[socket.room][0].uname)
     {
       //set turn to [socket.room][1]
@@ -332,6 +335,8 @@ io.sockets.on('connection', function (socket) {
       socket.strength++;
       socket.c_strength++;
       socket.turn_resource = true;
+
+      io.sockets.emit('AddStrength',{uname:socket.uname, value: socket.strength, cumulative: socket.c_strength});
     }
   });
 
@@ -341,6 +346,8 @@ io.sockets.on('connection', function (socket) {
       socket.intel++;
       socket.c_intel++;
       socket.turn_resource = true;
+
+      io.sockets.emit('AddIntel',{uname:socket.uname, value: socket.intel, cumulative: socket.c_intel});
     }
   });
 });

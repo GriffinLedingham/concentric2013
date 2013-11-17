@@ -47,8 +47,10 @@
     <!-- /ko -->
 
     <aside class="resources">
-      <div class="count" data-bind="text: 'Resources: ' + resourceCount()"></div>
-      <div class="addResource" data-bind="click: addResource, disable: haveUsedResource">+</div>
+      <div class="count strength" data-bind="text: 'Strength: ' + strengthCount()"></div>
+      <div class="count intel" data-bind="text: 'Intel: ' + intelCount()"></div>
+      <div class="addResource strength" data-bind="click: addStrength, visible: !haveUsedResource()">+</div>
+      <div class="addResource intel" data-bind="click: addIntel, visible: !haveUsedResource()">+</div>
     </aside>
 
   </aside>
@@ -64,7 +66,8 @@
     <!-- /ko -->
 
     <aside class="resources">
-      <div class="count" data-bind="text: 'Resources: ' + resourceCount()"></div>
+      <div class="count strength" data-bind="text: 'Strength: ' + strengthCount()"></div>
+      <div class="count intel" data-bind="text: 'Intel: ' + intelCount()"></div>
     </aside>
 
   </aside>
