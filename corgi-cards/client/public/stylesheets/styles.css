@@ -25,6 +25,10 @@ body {
     background-color: black;
     top: 500px;
     left: 500px; }
+  .card.action {
+    border-color: yellow; }
+  .card.target {
+    border-color: red; }
 
 #board {
   position: absolute;
