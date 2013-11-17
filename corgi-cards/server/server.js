@@ -165,22 +165,39 @@ io.sockets.on('connection', function (socket) {
     {
       return;
     }
-    console.log("Card Played\n", data)
+
+    var card;
+    for(var i = 0;i<socket.hand;i++)
+    {
+      if(socket.hand[i].id === data)
+      {
+        card = socket.hand[i];
+        break;
+      }
+    }
+    if(typeof card === 'undefined')
+    {
+      return;
+    }
+
+    console.log("Card Played\n", card)
 
     if(typeof active_cards[socket.room] === 'undefined')
     {
       active_cards[socket.room] = [];
     }
 
-    active_cards[socket.room].push(data);
+
+
+    active_cards[socket.room].push(card);
     for(var i = 0; i < socket.hand.length; i++) {
-      if(socket.hand[i].id === data.id){
+      if(socket.hand[i].id === card.id){
         socket.hand.splice(i, 1)
         break;
       }
     }
 
-    io.sockets.in(socket.room).emit('CardPlayed',data);
+    io.sockets.in(socket.room).emit('CardPlayed',card);
 
   });
 
