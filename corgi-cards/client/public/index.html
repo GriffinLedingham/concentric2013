@@ -13,9 +13,9 @@
     <!-- ko foreach: cards -->
         <div class="card" data-bind="draggable:
           {dragstop: $parent.dragstop, enabled: isMine},
-          attr: {id: id},
           attr: {
-            class: name
+            id: id,
+            'data-type': name
           },
           css: {
             monster: type() == 'monster',
@@ -26,7 +26,7 @@
           click: $parent.handleCardClick
           ">
 
-          <span data-bind="text:name + '  ' + stats.attack() + '  ' + stats.health() + ' (' + stats.cost() + ')'"></span>
+          <span data-bind=""></span>
           <!-- ko if: takingDamage -->
               <div class="yougotfucked animated fadeOutUpBig" data-bind="text: takingDamage"></div>
             <!-- /ko -->
@@ -40,7 +40,7 @@
         {dragstop: $parent.dragstop, enabled: isMine},
         attr: {
           id: id,
-          class: name
+          'data-type': name
         },
         css: {
           monster: type() == 'monster',
