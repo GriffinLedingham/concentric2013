@@ -206,6 +206,39 @@ io.sockets.on('connection', function (socket) {
 
     socket.emit('CardToHand',data);
   });
+
+  socket.on('CardInteraction',function(action_id,target_id){
+    //Action is always player's card
+    var player_card;
+    var opponent_card;
+    for(var i = 0;i<active_cards[socket.room].length;i++)
+    {
+      if(action_id === active_cards[socket.room][i].id)
+      {
+        player_card = active_cards[socket.room][i];
+        continue;
+      }
+      else if(target_id === active_cards[socket.room][i].id)
+      {
+        opponent_card = active_cards[socket.room][i];
+      }
+    }
+
+    if(typeof player_card === 'undefined' || typeof opponent_card === 'undefined')
+    {
+      return;
+    }
+
+    if(player_card.attack !== null)
+    {
+      attack(player_card,opponent_card,socket);
+    }
+    else
+    {
+      spell(player_card,opponent_card,socket);
+    }
+
+  });
 });
 
 /*
@@ -244,6 +277,19 @@ function draw_card(player)
     player.emit('CardDraw',top_deck);
 
     player.broadcast.emit('OpponentDraw',top_deck.id);
+}
+
+//Card1 is attacker, Card2 is defender
+function attack(attacker,defender,socket)
+{
+  //TODO: Attack
+  console.log('attack');
+}
+
+function spell(spell,defender,socket)
+{
+  //TODO: Spell
+  console.log('spell');
 }
 
 function shuffleArray(array) {
