@@ -36,8 +36,8 @@ class Board
       @cards.push new Card @, data
 
       $cardvm = $("##{data.id}")
-      $cardvm.css "top", data.y + 'px'
-      $cardvm.css "left", data.x + 'px'
+      $cardvm.css "top", (data.y) + 'px'
+      $cardvm.css "left", (data.x - 200) + 'px'
 
     @socket.on "sync_active", (data) =>
       _.each data, (card) =>
@@ -45,8 +45,8 @@ class Board
         @cards.push new Card @, data
 
         $cardvm = $("##{card.id}")
-        $cardvm.css "top", card.y + 'px'
-        $cardvm.css "left", card.x + 'px'
+        $cardvm.css "top", (card.y) + 'px'
+        $cardvm.css "left", (card.x - 200) + 'px'
 
     @socket.on "CardInteraction", (data) =>
 
@@ -115,6 +115,12 @@ class Board
     console.log "here"
     @action null
     @target null
+
+  handleSelfClick: =>
+    @target "self"
+
+  handleOpponentClick: =>
+    @target "opponent"
 
 class AppViewModel
   constructor: () ->

@@ -45,10 +45,9 @@ body
   width: $boardWidth
   height: $boardHeight
 
+  margin-left: 200px
+
   background-color: green
-
-
-
 
 .play
   width: 100px
@@ -68,3 +67,29 @@ body
 
   top: $boardHeight + 100px
   width: 100%
+
+.player
+  position: absolute
+  top: $boardHeight/2 - 100px
+  border-radius: 50%
+  width: 100px
+  height: 100px
+
+  border: solid 8px black
+
+#self
+  left: 20px
+  background-color: salmon
+
+  &.active
+    border-color: #CCFFFF
+
+#opponent
+  left: $boardWidth + 200px + 60px
+  background-color: purple
+
+  &.active
+    border-color: #FF0033
+
+
+

@@ -30,6 +30,14 @@
 
   <!-- /ko -->
 
+  <aside id="self" class="player" data-bind="click: board.handleSelfClick, css: {active: board.target() == 'self'}">
+
+  </aside>
+
+  <aside id="opponent" class="player" data-bind="click: board.handleOpponentClick, css: {active: board.target() == 'opponent'}">
+
+  </aside>
+
   <article class="login">
     <input type="text" placeholder="username" data-bind="
       value: username,
