@@ -1,7 +1,7 @@
 var fs = require('fs')
 var http = require('http');
 var express = require('express');
-
+var _ = require('underscore');
 var app = express()
 
 app.use(express.static("client/public"));
@@ -48,13 +48,14 @@ for(var i=0;i<20;i++)
 {
   var name = "Draw";
 
-  if(i % 2)
-    name = "DamageAll";
+  if(i >= 0 && i < 5)
+    name = "Draw"
+  else if (i >= 5 && i < 8)
+    name = "DamageAll"
+  else if (i >= 8 && i < 15)
+    name = "Damage"
   else
-    name = "DamageAll";
-
-  if(i % 5)
-    name = "DamageAll";
+    name = "Heal"
 
   var stats_obj = getStats(name);
   control.push({
@@ -404,12 +405,12 @@ io.sockets.on('connection', function (socket) {
  */
 function start_game(player1, player2)
 {
-  player1.deck = shuffleArray(rdw);
+  player1.deck = _.sample(rdw, rdw.length);
   for(var i =0;i<player1.deck.length;i++)
   {
     player1.deck[i].uname = player1.uname;
   }
-  player2.deck = shuffleArray(control);
+  player2.deck = _.sample(control, control.length);
   for(var i =0;i<player2.deck.length;i++)
   {
     player2.deck[i].uname = player2.uname;
