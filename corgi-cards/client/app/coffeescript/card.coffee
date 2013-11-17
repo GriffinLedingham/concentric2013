@@ -22,7 +22,6 @@ class window.Card
 
     @tapped = ko.observable false
 
-    @cost = ko.observable -1
 
   isMine: (card, ui) =>
     app.username() is @uname

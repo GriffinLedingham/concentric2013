@@ -14,11 +14,15 @@
         <div class="card" data-bind="draggable:
           {dragstop: $parent.dragstop, enabled: isMine},
           attr: {id: id},
-          css: {monster: type() == 'monster', spell: type() == 'spell', action: $parent.action() == $data, target: $parent.target() == $data},
+          css: {
+            monster: type() == 'monster',
+            spell: type() == 'spell',
+            action: $parent.action() == $data,
+            target: $parent.target() == $data},
           click: $parent.handleCardClick
           ">
 
-          <span data-bind="text:name + '  ' + stats.attack() + '  ' + stats.health()"></span>
+          <span data-bind="text:name + '  ' + stats.attack() + '  ' + stats.health() + ' (' + stats.cost() + ')'"></span>
           <!-- ko if: takingDamage -->
               <div class="yougotfucked animated fadeOutUpBig" data-bind="text: takingDamage"></div>
             <!-- /ko -->
@@ -28,7 +32,10 @@
 
   <!-- ko with: self -->
     <!-- ko foreach: hand -->
-        <div class="card hand" data-bind="text:name + '  ' + stats.attack() + '  ' + stats.health(), draggable: {dragstop: $parent.dragstop, enabled: isMine}, attr: {id: id}, css: {monster: type() == 'monster', spell: type() == 'spell'}"></div>
+        <div class="card hand" data-bind="text:name + '  ' + stats.attack() + '  ' + stats.health() + ' (' + stats.cost() + ')', draggable: {dragstop: $parent.dragstop, enabled: isMine}, attr: {id: id},
+        css: {
+          monster: type() == 'monster',
+          spell: type() == 'spell'}"></div>
     <!-- /ko -->
 
     <!-- ko foreach: opponentHand -->

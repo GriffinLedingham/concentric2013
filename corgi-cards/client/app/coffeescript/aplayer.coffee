@@ -121,14 +121,9 @@ class window.Player
 
 
   isMine: () =>
-
     true
 
-  canPlay: (card) =>
-    if card.type() is 'monster' && card.cost() > @strength()
-      return false
-    else if card.type() is 'spell' && card.cost() > @intil()
-      return false
 
-    true
+
+
 
