@@ -59,6 +59,16 @@ class window.Player
       $cardvm.css "top", data.y + 'px'
       $cardvm.css "left", data.x + 'px'
 
+    @socket.on "SyncOpponentHand", (data) =>
+      _.each data, (card) =>
+        @opponentHand.push card
+
+        $cardvm = $("##{card.id}")
+
+        $cardvm.css "top", card.y + 'px'
+        $cardvm.css "left", card.x + 'px'
+
+
   dragstop: (card, ui) =>
 
     card = ko.dataFor ui.helper.get(0)

@@ -83,11 +83,12 @@ io.sockets.on('connection', function (socket) {
         {
           if(room_players[room][0].uname === socket.uname)
           {
+            console.log(room_players[room][0].hand, "@@@");
             socket.emit('SyncHand',room_players[room][0].hand);
             var opponent_hand = [];
             for(var i = 0;i< room_players[room][1].hand.length;i++)
             {
-              opponent_hand.push({id:room_players[room][1].hand[i].id,x:room_players[room][1].hand[i].x,y:room_players[room][1].hand[i].y);
+              opponent_hand.push({id:room_players[room][1].hand[i].id,x:room_players[room][1].hand[i].x,y:room_players[room][1].hand[i].y});
             }
 
             socket.emit('SyncOpponentHand', opponent_hand);
@@ -102,7 +103,7 @@ io.sockets.on('connection', function (socket) {
             var opponent_hand = [];
             for(var i = 0;i< room_players[room][0].hand.length;i++)
             {
-              opponent_hand.push({id:room_players[room][0].hand[i].id,x:room_players[room][0].hand[i].x,y:room_players[room][0].hand[i].y);
+              opponent_hand.push({id:room_players[room][0].hand[i].id,x:room_players[room][0].hand[i].x,y:room_players[room][0].hand[i].y});
             }
 
             socket.emit('SyncOpponentHand', opponent_hand);
@@ -172,8 +173,15 @@ io.sockets.on('connection', function (socket) {
     }
 
     active_cards[socket.room].push(data);
+    for(var i = 0; i < socket.hand.length; i++) {
+      if(socket.hand[i].id === data.id){
+        socket.hand.splice(i, 1)
+        break;
+      }
+    }
 
     io.sockets.in(socket.room).emit('CardPlayed',data);
+
   });
 
   socket.on('CardToHand',function(data){
