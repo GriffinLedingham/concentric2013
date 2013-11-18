@@ -490,7 +490,7 @@ function attack(attacker,defender,socket)
 {
   var self;
   var opponent;
-  if(room_players[socket.room][0].name === socket.name)
+  if(room_players[socket.room][0].uname === socket.uname)
   {
     self = room_players[socket.room][0];
     opponent = room_players[socket.room][1];
@@ -601,7 +601,7 @@ function spell(spell,defender,socket)
   {
     var self;
     var opponent;
-    if(room_players[socket.room][0].name === socket.name)
+    if(room_players[socket.room][0].uname === socket.uname)
     {
       self = room_players[socket.room][0];
       opponent = room_players[socket.room][1];
@@ -697,13 +697,17 @@ function spell(spell,defender,socket)
   else if(defender === 'self')
   {
     var self;
-    if(room_players[socket.room][0].name === socket.name)
+    if(room_players[socket.room][0].uname === socket.uname)
     {
       self = room_players[socket.room][0];
+      opponent = room_players[socket.room][1];
+
     }
     else
     {
       self = room_players[socket.room][1];
+      opponent = room_players[socket.room][0];
+
     }
 
     switch(spell.stats.special.ability)
@@ -734,13 +738,17 @@ function spell(spell,defender,socket)
   else if(defender === 'opponent')
   {
     var opponent;
-    if(room_players[socket.room][0].name === socket.name)
+    var self;
+    if(room_players[socket.room][0].uname === socket.uname)
     {
       opponent = room_players[socket.room][1];
+      self = room_players[socket.room][0];
+
     }
     else
     {
       opponent = room_players[socket.room][0];
+      self = room_players[socket.room][1];
     }
 
     switch(spell.stats.special.ability)
@@ -791,7 +799,7 @@ function spell(spell,defender,socket)
         var damaged_card = active_cards[socket.room][defender_index];
 
         defender_life = defender_life - spell_damage;
-        
+
         if(defender_life < 1)
         {
           console.log("creature dead");
