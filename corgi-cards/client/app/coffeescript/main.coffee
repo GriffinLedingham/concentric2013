@@ -45,8 +45,8 @@ class Board
       @cards.push new Card @, data
 
       $cardvm = $("##{data.id}")
-      $cardvm.css "top", (data.y) + 'px'
-      $cardvm.css "left", (data.x - 200) + 'px'
+      $cardvm.css "top", (data.y - 210) + 'px'
+      $cardvm.css "left", (data.x - 515) + 'px'
 
     @socket.on "sync_active", (data) =>
       _.each data, (card) =>
@@ -54,8 +54,8 @@ class Board
         @cards.push new Card @, data
 
         $cardvm = $("##{card.id}")
-        $cardvm.css "top", (card.y) + 'px'
-        $cardvm.css "left", (card.x - 200) + 'px'
+        $cardvm.css "top", (card.y - 210) + 'px'
+        $cardvm.css "left", (card.x - 515) + 'px'
 
     @socket.on "SpellCast", (cardId) =>
 
