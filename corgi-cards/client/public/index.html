@@ -10,7 +10,12 @@
 <body>
 
   <article id="board" data-bind="with: board, droppable: {accept: '.hand', drop: board.dropCard, click: board.handleBoardClick}">
-    <!-- ko foreach: cards -->
+
+      <article id="splash" data-bind="if: $parent.oppName() == 'Opponent'">
+        Corgi Cards: <br> With a Vengeance
+      </article>
+
+      <!-- ko foreach: cards -->
         <div class="card" data-bind="draggable:
           {dragstop: $parent.dragstop, enabled: isMine},
           attr: {
@@ -88,7 +93,7 @@
       css: {active: board.target() == 'self'}">
     </div>
 
-    <div class="lifeTotal" data-bind="text: 'You: ' + life()"></div>
+    <div class="lifeTotal" data-bind="text: $parent.username() + ' ' + life()"></div>
     <!-- ko if: diff -->
       <div class="yougotfucked animated fadeOutUpBig" data-bind="text: diff"></div>
     <!-- /ko -->
@@ -114,7 +119,7 @@
     css: {active: board.target() == 'opponent'}">
     </div>
 
-    <div class="lifeTotal" data-bind="text: 'Opponent: ' + life()"></div>
+    <div class="lifeTotal" data-bind="text: $parent.oppName() + ' ' + life()"></div>
     <!-- ko if: diff -->
       <div class="yougotfucked animated fadeOutUpBig" data-bind="text: diff"></div>
     <!-- /ko -->
@@ -154,6 +159,8 @@
       <li data-bind="text: message"></li>
     </ul>
   </section>
+
+
 
   <script src="javascripts/socket.io.js"></script>
   <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>

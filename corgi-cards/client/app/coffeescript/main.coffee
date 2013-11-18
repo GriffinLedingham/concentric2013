@@ -189,7 +189,7 @@ class Action
 
 class AppViewModel
   constructor: () ->
-
+    @oppName = ko.observable "Opponent"
     @username = ko.observable null
     @room = ko.observable null
 
@@ -218,9 +218,13 @@ class AppViewModel
     @self = new Player @, "self"
     @opponent = new Player @, "opponent"
 
-    @socket.on "FirstPlayer", (name) =>
-      console.log name, @username()
-      @player1(name is @username())
+    @socket.on "FirstPlayer", (names) =>
+      @player1(names.first is @username())
+
+      if names.p1 isnt @username()
+        @oppName names.p1
+      else
+        @oppName names.p2
 
     @socket.on "PlayerLife", (data) =>
       selfLife = data.self

@@ -179,7 +179,7 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('HandMoved',function(data){
-    console.log("Hand Moved\n", data)
+    // console.log("Hand Moved\n", data)
 
     for(var i = 0;i<socket.hand.length;i++)
     {
@@ -429,7 +429,9 @@ function start_game(player1, player2)
     room_turn[player1.room] = player2;
   }
 
-  io.sockets.in(player1.room).emit('FirstPlayer',room_turn[player1.room].uname);
+
+
+  io.sockets.in(player1.room).emit('FirstPlayer', {first: room_turn[player1.room].uname, p1: player1.uname, p2: player2.uname});
 
   player1.hand = [];
   player2.hand = [];

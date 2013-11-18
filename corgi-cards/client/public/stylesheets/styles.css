@@ -10,7 +10,7 @@ body {
   padding: 0;
   margin: 0;
   font-family: robotomedium;
-  background-image: url("/images/background-castle.jpg"); }
+  background-image: url("/images/background-castle.png"); }
 
 .yougotfucked {
   -webkit-animation-duration: 10s !important;
@@ -38,9 +38,11 @@ body {
     top: 500px;
     left: 500px; }
   .card.action {
-    border-color: yellow; }
+    border: solid 5px yellow;
+    box-sizing: content-box; }
   .card.target {
-    border-color: red; }
+    border: solid 5px yellow;
+    box-sizing: content-box; }
   .card .cost {
     position: absolute;
     bottom: 2px;
@@ -65,8 +67,8 @@ body {
   position: absolute;
   width: 900px;
   height: 600px;
-  margin-left: 200px;
-  background-color: green; }
+  margin-left: 515px;
+  margin-top: 210px; }
 
 .play {
   width: 100px;
@@ -78,7 +80,7 @@ body {
 
 .login {
   position: absolute;
-  top: 50px;
+  bottom: 300px;
   left: 10px; }
 
 #hand {
@@ -94,7 +96,7 @@ body {
 
 #self, #opponent {
   position: absolute;
-  top: 200px; }
+  top: 50px; }
 
 #self {
   left: 20px; }
@@ -104,7 +106,7 @@ body {
       border-color: #ccffff; }
 
 #opponent {
-  left: 1160px; }
+  right: 50px; }
   #opponent .player {
     background-color: purple; }
     #opponent .player.active {
@@ -120,8 +122,8 @@ body {
   line-height: 50px;
   border: solid 1px black;
   position: absolute;
-  right: 250px;
-  top: 20px; }
+  right: 425px;
+  top: 125px; }
   .endTurn:hover {
     background-color: #dddddd;
     cursor: pointer; }
@@ -165,7 +167,47 @@ body {
 #log {
   position: absolute;
   right: 20px;
-  top: 20px; }
+  top: 380px;
+  overflow-y: auto;
+  max-height: 500px;
+  width: 250px;
+  overflow-x: hidden;
+  background-color: white;
+  padding: 3px;
+  border: solid 2px black;
+  opacity: 0.4; }
+
+.stat {
+  position: absolute;
+  left: 10px;
+  font-size: 36px; }
+  .stat img {
+    display: inline-block;
+    width: 36px;
+    position: relative;
+    left: 0; }
+  .stat span {
+    position: relative;
+    left: -30px; }
+  .stat.shield {
+    bottom: 2px; }
+  .stat.atk {
+    top: 6px; }
+    .stat.atk img {
+      height: 38px;
+      width: auto; }
+    .stat.atk span {
+      left: -18px;
+      top: 6px; }
+
+#splash {
+  color: red;
+  font-family: "card-text";
+  font-size: 70px;
+  width: 900px;
+  height: 600px;
+  text-align: center;
+  margin-top: 200px; }
 
 @font-face {
   font-family: "robotomedium";
