@@ -26,6 +26,8 @@
           click: $parent.handleCardClick
           ">
 
+          <span class="cost" data-bind="text: stats.cost"></span>
+
           <span data-bind=""></span>
           <!-- ko if: takingDamage -->
               <div class="yougotfucked animated fadeOutUpBig" data-bind="text: takingDamage"></div>
@@ -48,6 +50,13 @@
           card: true,
           hand: true}">
         <span class="cost" data-bind="text: stats.cost"></span>
+
+        <!-- ko if: type() == 'monster' -->
+          <span class="stat atk">
+            <img src="/images/swords.png">
+            <span class="number" data-bind="text: stats.attack()"></span>
+          </span>
+        <!-- /ko -->
 
         </div>
 
