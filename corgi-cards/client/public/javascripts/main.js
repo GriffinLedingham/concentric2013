@@ -12,7 +12,7 @@ window.Player = (function() {
     this.dragstop = __bind(this.dragstop, this);
     this.addIntel = __bind(this.addIntel, this);
     this.addStrength = __bind(this.addStrength, this);
-    _ref = this.delegate, this.actions = _ref.actions, this.board = _ref.board, this.socket = _ref.socket;
+    _ref = this.delegate, this.actions = _ref.actions, this.board = _ref.board, this.socket = _ref.socket, this.player1 = _ref.player1;
     this.life = ko.observable(30);
     this.diff = ko.observable(false);
     this.hand = ko.observableArray([]);
@@ -43,7 +43,8 @@ window.Player = (function() {
         message: "You drew a card",
         target: data.id
       });
-      data.x = Math.random() * 1300;
+      console.log("!!!", _this.player1());
+      data.x = Math.random() * 500 + (_this.player1() ? 0 : 600);
       data.y = 700;
       card = new Card(_this, data);
       _this.hand.push(card);
@@ -193,10 +194,10 @@ window.Card = (function() {
 
 window.Stats = (function() {
   function Stats(stats) {
-    this.attack = ko.observable(stats.attack != null ? stats.attack : -1);
-    this.health = ko.observable(stats.health != null ? stats.health : -1);
-    this.baseHealth = ko.observable(stats.health != null ? stats.health : -1);
-    this.cost = ko.observable(stats.cost != null ? stats.cost : -1);
+    this.attack = ko.observable(stats.attack != null ? stats.attack : "");
+    this.health = ko.observable(stats.health != null ? stats.health : "");
+    this.baseHealth = ko.observable(stats.health != null ? stats.health : "");
+    this.cost = ko.observable(stats.cost != null ? stats.cost : "1m");
   }
 
   return Stats;
@@ -317,7 +318,7 @@ Board = (function() {
           return card.id === combat.target.id;
         });
         if (action != null) {
-          if (combat.action.life === 0) {
+          if (combat.action.life <= 0) {
             _this.cards(_.without(_this.cards(), action));
             _this.actions.push(new Action({
               message: "" + action.name + " is in a better place"
@@ -330,7 +331,7 @@ Board = (function() {
           }
         }
         if (target != null) {
-          if (combat.target.life === 0) {
+          if (combat.target.life <= 0) {
             _this.cards(_.without(_this.cards(), target));
             _this.actions.push(new Action({
               message: "" + target.name + " is in a better place"
@@ -460,6 +461,7 @@ AppViewModel = (function() {
     var _this = this;
     this.username = ko.observable(null);
     this.room = ko.observable(null);
+    this.player1 = ko.observable(false);
     this.activeTurn = ko.observable(false);
     this.socket = io.connect(window.location.origin);
     this.host = window.location.origin;
@@ -482,6 +484,10 @@ AppViewModel = (function() {
     });
     this.self = new Player(this, "self");
     this.opponent = new Player(this, "opponent");
+    this.socket.on("FirstPlayer", function(name) {
+      console.log(name, _this.username());
+      return _this.player1(name === _this.username());
+    });
     this.socket.on("PlayerLife", function(data) {
       var opponentDiff, opponentLife, selfDiff, selfLife;
       selfLife = data.self;
