@@ -118,6 +118,7 @@ body {
 .endTurn {
   width: 100px;
   height: 50px;
+  background-color: yellow;
   text-align: center;
   line-height: 50px;
   border: solid 1px black;
@@ -199,6 +200,11 @@ body {
     .stat.atk span {
       left: -18px;
       top: 6px; }
+  .stat.spell {
+    top: 6px; }
+    .stat.spell span {
+      left: -2px;
+      top: 0px; }
 
 #splash {
   color: red;

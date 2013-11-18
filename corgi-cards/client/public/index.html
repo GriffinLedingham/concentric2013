@@ -42,6 +42,11 @@
               <span class="number" data-bind="text: stats.health()"></span>
             </span>
           <!-- /ko -->
+          <!-- ko if: type() == 'spell' -->
+            <span class="stat spell">
+              <span class="number" data-bind="text: stats.value()"></span>
+            </span>
+          <!-- /ko -->
           <span data-bind=""></span>
           <!-- ko if: takingDamage -->
               <div class="yougotfucked animated fadeOutUpBig" data-bind="text: takingDamage"></div>
@@ -75,7 +80,11 @@
             <span class="number" data-bind="text: stats.health()"></span>
           </span>
         <!-- /ko -->
-
+        <!-- ko if: type() == 'spell' -->
+          <span class="stat spell">
+            <span class="number" data-bind="text: stats.value()"></span>
+          </span>
+        <!-- /ko -->
         </div>
 
     <!-- /ko -->

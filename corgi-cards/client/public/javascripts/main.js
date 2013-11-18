@@ -46,7 +46,7 @@ window.Player = (function() {
         target: data.id
       });
       data.x = Math.random() * 500 + (_this.player1() ? 0 : 600);
-      data.y = 900;
+      data.y = 1000;
       card = new Card(_this, data);
       _this.hand.push(card);
       $cardvm = $("#" + card.id);
@@ -200,10 +200,13 @@ window.Card = (function() {
 
 window.Stats = (function() {
   function Stats(stats) {
+    var _ref;
+
     this.attack = ko.observable(stats.attack != null ? stats.attack : "");
     this.health = ko.observable(stats.health != null ? stats.health : "");
     this.baseHealth = ko.observable(stats.health != null ? stats.health : "");
     this.cost = ko.observable(stats.cost != null ? stats.cost : "1m");
+    this.value = ko.observable(((_ref = stats.special) != null ? _ref.value : void 0) != null ? stats.special.value : "?");
   }
 
   return Stats;

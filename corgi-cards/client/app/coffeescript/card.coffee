@@ -34,6 +34,7 @@ class window.Stats
     @health = ko.observable(if stats.health? then stats.health else "")
     @baseHealth = ko.observable(if stats.health? then stats.health else "")
     @cost = ko.observable(if stats.cost? then stats.cost else "1m")
+    @value = ko.observable(if stats.special?.value? then stats.special.value else "?")
 
 class window.Ability
   constructor: (@type, @value) ->

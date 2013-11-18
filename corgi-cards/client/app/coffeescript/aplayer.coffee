@@ -46,7 +46,7 @@ class window.Player
         target: data.id
 
       data.x = Math.random()*500 + (if @player1() then 0 else 600)
-      data.y = 900
+      data.y = 1000
       card = new Card @, data
       @hand.push card
 

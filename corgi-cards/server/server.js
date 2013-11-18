@@ -871,19 +871,35 @@ function getStats(name)
   switch(name)
   {
     case 'OneOne':
-      return {attack:1,health:1,special:[], cost:1};
+      if(Math.floor((Math.random()*10) + 1) % 3)
+        return {attack:1,health:1,special:[], cost:1};
+      else
+        return {attack:2,health:2,special:[], cost:2};
       break;
     case 'TwoTwo':
-      return {attack:2,health:2,special:[], cost:2};
+      if(Math.floor((Math.random()*10) + 1) % 2)
+        return {attack:3,health:2,special:[], cost:2};
+      else
+        return {attack:5,health:5,special:[], cost:4};
       break;
     case 'Draw':
-      return {attack: null, health: null, special: {ability: "draw", value: 1}, cost:1};
+      if(Math.floor((Math.random()*10) + 1) % 2)
+        return {attack: null, health: null, special: {ability: "draw", value: 1}, cost:1};
+      else
+        return {attack: null, health: null, special: {ability: "draw", value: 3}, cost:3};
+
       break;
     case 'Heal':
-      return {attack: null, health: null, special: {ability: "heal", value: 2}, cost:1};
+      if(Math.floor((Math.random()*10) + 1) % 4)
+        return {attack: null, health: null, special: {ability: "heal", value: 2}, cost:1};
+      else
+        return {attack: null, health: null, special: {ability: "heal", value: 10}, cost:5};
       break;
     case 'DamageAll':
-      return {attack: null, health: null, special: {ability: "damage", value: 1}, cost:1};
+      if(Math.floor((Math.random()*10) + 1) % 3)
+        return {attack: null, health: null, special: {ability: "damage", value: 1}, cost:1};
+      else
+        return {attack: null, health: null, special: {ability: "damage", value: 2}, cost:3};
       break;
     case 'Damage':
       return {attack: null, health: null, special: {ability: "damage", value: 2}, cost:1};
