@@ -109,7 +109,7 @@ body
 
 .login
   position: absolute
-  bottom: 250px
+  bottom: 300px
   left: $padding
 
 #hand
@@ -213,10 +213,10 @@ body
 #log
   position: absolute
   right: 20px
-  top: 320px
+  top: 380px
 
   overflow-y: auto
-  height: 500px
+  max-height: 500px
   width: 250px
   overflow-x: hidden
 
@@ -228,7 +228,6 @@ body
 .stat
   position: absolute
   left: 10px
-  bottom: 0
 
   font-size: 36px
 
@@ -241,6 +240,20 @@ body
   span
     position: relative
     left: -30px
+
+  &.shield
+    bottom: 2px
+
+  &.atk
+    top: 6px
+
+    img
+      height: 38px
+      width: auto
+
+    span
+      left: -18px
+      top: 6px
 
 @font-face
   font-family: 'robotomedium'

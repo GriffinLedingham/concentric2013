@@ -27,7 +27,16 @@
           ">
 
           <span class="cost" data-bind="text: stats.cost"></span>
-
+          <!-- ko if: type() == 'monster' -->
+            <span class="stat atk">
+              <img src="/images/single-sword.png">
+              <span class="number" data-bind="text: stats.attack()"></span>
+            </span>
+            <span class="stat shield">
+              <img src="/images/shield.png">
+              <span class="number" data-bind="text: stats.health()"></span>
+            </span>
+          <!-- /ko -->
           <span data-bind=""></span>
           <!-- ko if: takingDamage -->
               <div class="yougotfucked animated fadeOutUpBig" data-bind="text: takingDamage"></div>
@@ -53,8 +62,12 @@
 
         <!-- ko if: type() == 'monster' -->
           <span class="stat atk">
-            <img src="/images/swords.png">
+            <img src="/images/single-sword.png">
             <span class="number" data-bind="text: stats.attack()"></span>
+          </span>
+          <span class="stat shield">
+            <img src="/images/shield.png">
+            <span class="number" data-bind="text: stats.health()"></span>
           </span>
         <!-- /ko -->
 
