@@ -62,7 +62,7 @@
 
   <aside id="self" data-bind="with:self">
 
-    <div class="player" data-bind="click: board.handleOpponentClick,
+    <div class="player" data-bind="click: board.handleSelfClick,
       css: {active: board.target() == 'self'}">
     </div>
 
@@ -88,7 +88,7 @@
   <aside id="opponent" data-bind="
     with: opponent">
 
-    <div class="player" data-bind="    click: board.handleSelfClick,
+    <div class="player" data-bind="    click: board.handleOpponentClick,
     css: {active: board.target() == 'opponent'}">
     </div>
 
