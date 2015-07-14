@@ -1,0 +1,16 @@
+{
+  "name": "corgi-cards",
+  "preferGlobal": true,
+  "version": "0.1.0",
+  "author": "Griffin Ledingham <gcledingham@gmail.com>",
+  "dependencies" : {
+    "http" : "*",
+    "express" : "3.4.8",
+    "underscore" : "*",
+    "socket.io" : "0.9.16"
+  },
+  "license": "GPL v2",
+  "engines": {
+    "node": ">=0.6"
+  }
+}
