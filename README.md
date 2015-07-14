@@ -22,10 +22,15 @@ from within the corgi-cards/ directory.
 To play, connect to localhost:8142 using 2 different windows.
 
 Once you've reached the game landing page, follow the steps below to get start (this was a hackathon, so user friendliness was not at the forefront of our development):
+
 1. On the first window, enter a username into the "username" input box, and hit enter
+ 
 2. On the first window, enter a room number/name into the "room" input box, and hit enter
+ 
 3. On the second window, enter a username into the "username" input box, and hit enter
+ 
 4. On the second window, enter a room number/name into the "room" input box, and hit enter
+ 
 
 This will launch a room of the game for the two active windows.
 
