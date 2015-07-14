@@ -3,6 +3,14 @@ Game jam at concentric 2013
 
 A networked 2 player card game, based around medieval corgis battling to the death.
 
+To install the server, run:
+
+```
+npm install
+```
+
+in the corgi-cards/server/ directory.
+
 So start the server, run:
 
 ```
